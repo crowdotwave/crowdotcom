@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>crowdotcom</title>
+<meta name="description" content="Loyalty programs, client apps and websites for small businesses in Waterloo Region, built and run by one person.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  /* Palette: cool paper, green-black ink, and ultramarine stamp ink as the
+     single accent. Stamp ink is what a loyalty card is marked with, so it is
+     spent on stamps, links and the one primary action, nowhere else. */
+  :root {
+    --paper: #f2f4f0;
+    --card: #ffffff;
+    --ink: #16201c;
+    --ink-soft: #56655e;
+    --rule: #d3dbd5;
+    --stamp: #2b3bd1;
+    --stamp-ink: #ffffff;
+    --stamp-soft: #e3e6fb;
+    --todo: #8a5a00;
+    --todo-ground: #fff6dc;
+
+    --display: "Bricolage Grotesque", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    --measure: 38rem;
+    --wide: 72rem;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0f1512;
+      --card: #172019;
+      --ink: #e7eee9;
+      --ink-soft: #a2b2aa;
+      --rule: #2b3830;
+      --stamp: #8d99ff;
+      --stamp-ink: #0b0f2e;
+      --stamp-soft: #1d2250;
+      --todo: #f2c35b;
+      --todo-ground: #2c2410;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #0f1512;
+    --card: #172019;
+    --ink: #e7eee9;
+    --ink-soft: #a2b2aa;
+    --rule: #2b3830;
+    --stamp: #8d99ff;
+    --stamp-ink: #0b0f2e;
+    --stamp-soft: #1d2250;
+    --todo: #f2c35b;
+    --todo-ground: #2c2410;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 1.0625rem/1.6 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--stamp); text-underline-offset: .18em; }
+  :focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; border-radius: 2px; }
+
+  .wrap { max-width: var(--wide); margin-inline: auto; padding-inline: var(--gutter); }
+
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+
+  .label {
+    font: 500 .75rem/1.3 var(--mono);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* Header ---------------------------------------------------------------- */
+
+  .top {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .top .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding-block: .75rem;
+  }
+
+  .brand {
+    font: 800 1.25rem/1 var(--display);
+    letter-spacing: -.02em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav { display: flex; align-items: center; gap: 1.5rem; }
+  .nav a:not(.btn) { color: var(--ink-soft); text-decoration: none; font-size: .95rem; }
+  .nav a:not(.btn):hover { color: var(--ink); }
+  @media (max-width: 44rem) { .nav a:not(.btn) { display: none; } }
+
+  /* Buttons --------------------------------------------------------------- */
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 2.9rem; padding: .7rem 1.25rem;
+    font: 700 1rem/1 var(--body);
+    border-radius: 999px;
+    text-decoration: none;
+    border: 2px solid var(--stamp);
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--stamp); color: var(--stamp-ink); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-quiet { background: transparent; color: var(--ink); border-color: var(--rule); }
+  .btn-quiet:hover { border-color: var(--ink-soft); }
+  .btn-small { min-height: 2.4rem; padding: .5rem 1rem; font-size: .9rem; }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; filter: none; }
+
+  /* Hero ------------------------------------------------------------------ */
+
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(3rem, 7vw, 5.5rem);
+  }
+  @media (max-width: 52rem) { .hero .wrap { grid-template-columns: 1fr; } }
+
+  .hero-copy { display: flex; flex-direction: column; gap: 1.4rem; }
+
+  .hero h1 {
+    font-size: clamp(2.1rem, 1.3rem + 3.4vw, 3.9rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -.03em;
+    font-variation-settings: "opsz" 96;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--stamp);
+  }
+
+  .hero .lede { font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); color: var(--ink-soft); max-width: 32rem; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+  /* The stamp card. The one piece of the page that is only this subject:
+     a loyalty card, part way to its reward. Stamps sit visible at rest. */
+
+  .stampcard {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 1.1rem;
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    display: flex; flex-direction: column; gap: 1.25rem;
+    box-shadow: 0 1px 0 var(--rule), 0 18px 40px -24px rgba(22, 32, 28, .35);
+    transform: rotate(-1.5deg);
+    max-width: 26rem;
+    width: 100%;
+    justify-self: center;
+  }
+  @media (prefers-reduced-motion: reduce) { .stampcard { transform: none; } }
+
+  .stampcard-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .stampcard-title { font: 800 1.35rem/1.1 var(--display); letter-spacing: -.02em; }
+
+  .stamps {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem;
+  }
+
+  .stamps li {
+    aspect-ratio: 1;
+    max-width: 100%;
+    border-radius: 50%;
+    border: 2px dashed var(--rule);
+    display: grid; place-items: center;
+    font: 500 .7rem/1 var(--mono);
+    color: var(--ink-soft);
+  }
+
+  .stamps li.on {
+    border: 2px solid var(--stamp);
+    background: var(--stamp-soft);
+    color: var(--stamp);
+  }
+
+  .stamps li.on svg { width: 55%; height: 55%; }
+
+  .stamps li.reward {
+    border-style: solid;
+    border-color: var(--ink);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .stamps li.fresh { animation: press 520ms cubic-bezier(.2, 1.4, .4, 1) 500ms backwards; }
+  @keyframes press {
+    from { transform: scale(1.35) rotate(-12deg); }
+    to   { transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .stamps li.fresh { animation: none; } }
+
+  .stampcard-foot {
+    border-top: 1px dashed var(--rule);
+    padding-top: 1rem;
+    font-size: .95rem;
+    color: var(--ink-soft);
+  }
+
+  /* Sections -------------------------------------------------------------- */
+
+  section { scroll-margin-top: 4.5rem; }
+
+  .band { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid var(--rule); }
+
+  .section-head { display: flex; flex-direction: column; gap: .75rem; margin-bottom: clamp(2rem, 4vw, 3rem); max-width: var(--measure); }
+  .section-head h2 {
+    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.7rem);
+    font-weight: 800;
+    letter-spacing: -.025em;
+    line-height: 1.08;
+  }
+  .section-head p { color: var(--ink-soft); }
+
+  /* The work: three projects, one row each on wide screens. */
+
+  .projects { display: flex; flex-direction: column; }
+
+  .project {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 1rem clamp(2rem, 5vw, 4rem);
+    padding-block: clamp(1.75rem, 4vw, 2.5rem);
+    border-top: 1px solid var(--rule);
+  }
+  .project:last-child { border-bottom: 1px solid var(--rule); }
+  @media (max-width: 48rem) { .project { grid-template-columns: 1fr; } }
+
+  .project-intro { display: flex; flex-direction: column; gap: .7rem; }
+  .project h3 { font-size: clamp(1.4rem, 1.2rem + .8vw, 1.8rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+  .project-intro p { color: var(--ink-soft); }
+
+  .status {
+    align-self: flex-start;
+    display: inline-flex; align-items: center; gap: .5rem;
+    font: 500 .75rem/1.3 var(--mono);
+    letter-spacing: .04em;
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: .35rem .75rem;
+  }
+  .status::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: var(--stamp); }
+
+  .points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .9rem; }
+  .points li { display: grid; grid-template-columns: 1.1rem 1fr; gap: .75rem; }
+  .points li::before {
+    content: ""; width: .7rem; height: .7rem; margin-top: .5em;
+    border: 2px solid var(--stamp); border-radius: 50%;
+  }
+
+  /* What I build: four offers. */
+
+  .offers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  @media (max-width: 40rem) { .offers { grid-template-columns: 1fr; } }
+
+  .offer { background: var(--card); padding: clamp(1.5rem, 3vw, 2.25rem); display: flex; flex-direction: column; gap: .7rem; }
+  .offer h3 { font-size: 1.3rem; font-weight: 700; letter-spacing: -.015em; line-height: 1.2; }
+  .offer p { color: var(--ink-soft); }
+  .offer.lead { background: var(--stamp-soft); }
+  .offer.lead .label { color: var(--stamp); }
+
+  /* How I work: four plain statements, two columns. */
+
+  .ways {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.75rem, 4vw, 3rem) clamp(2rem, 5vw, 4rem);
+  }
+  @media (max-width: 40rem) { .ways { grid-template-columns: 1fr; } }
+
+  .ways li { display: flex; flex-direction: column; gap: .5rem; padding-top: 1rem; border-top: 2px solid var(--ink); }
+  .ways h3 { font-size: 1.3rem; font-weight: 700; letter-spacing: -.015em; }
+  .ways p { color: var(--ink-soft); max-width: 30rem; }
+
+  /* About and contact share a band. */
+
+  .closing .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: start;
+  }
+  @media (max-width: 52rem) { .closing .wrap { grid-template-columns: 1fr; } }
+
+  .about { display: flex; flex-direction: column; gap: 1.1rem; }
+  .about .big { font: 700 clamp(1.5rem, 1.2rem + 1.2vw, 2rem)/1.2 var(--display); letter-spacing: -.02em; text-wrap: balance; }
+
+  .price {
+    display: flex; flex-direction: column; gap: .35rem;
+    padding-top: 1rem; border-top: 1px solid var(--rule);
+  }
+  .price p:not(.label) { font-size: 1.1rem; }
+
+  .todo {
+    border: 2px dashed var(--todo);
+    background: var(--todo-ground);
+    color: var(--todo);
+    border-radius: .6rem;
+    padding: .75rem 1rem;
+    font: 500 .85rem/1.45 var(--mono);
+  }
+
+  .contact {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 1.1rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .contact h2 { font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem); font-weight: 800; letter-spacing: -.025em; line-height: 1.1; }
+
+  form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+  @media (max-width: 34rem) { .row { grid-template-columns: 1fr; } }
+
+  .field { display: flex; flex-direction: column; gap: .4rem; }
+  .field label { font-weight: 700; font-size: .95rem; }
+  .field .opt { font-weight: 400; color: var(--ink-soft); }
+
+  input, textarea {
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--rule);
+    border-radius: .6rem;
+    padding: .7rem .85rem;
+    width: 100%;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--stamp); box-shadow: 0 0 0 3px var(--stamp-soft); }
+  textarea { min-height: 8rem; resize: vertical; }
+
+  .form-note { font-size: .95rem; color: var(--ink-soft); }
+  .form-done {
+    border: 2px solid var(--stamp);
+    border-radius: .8rem;
+    padding: 1rem 1.1rem;
+    background: var(--stamp-soft);
+  }
+  .form-error { color: var(--ink); border-left: 3px solid var(--todo); padding-left: .75rem; }
+
+  footer { border-top: 1px solid var(--rule); }
+  footer .wrap {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem;
+    padding-block: 2rem 2.5rem;
+    color: var(--ink-soft); font-size: .9rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" data-brand>crowdotcom</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#build">What I build</a>
+      <a href="#how">How I work</a>
+      <a class="btn btn-primary btn-small" href="#contact">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="label">Loyalty Operations &amp; Digital Product Specialist · Waterloo Region, Ontario</p>
+        <h1 id="hero-title">Loyalty programs, client apps and websites, built for your business and <em>run by the person who built them.</em></h1>
+        <p class="lede">I build the systems that bring your clients back, and I stay to keep them working.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#contact">Get in touch</a>
+          <a class="btn btn-quiet" href="#work">See the work</a>
+        </div>
+      </div>
+
+      <div class="stampcard" role="img" aria-label="A loyalty card with seven of ten visits stamped, three to go before a reward.">
+        <div class="stampcard-head">
+          <span class="stampcard-title">Come back soon</span>
+          <span class="label">7 of 10</span>
+        </div>
+        <ul class="stamps" aria-hidden="true">
+          <li class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li class="on fresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li>
+          <li>8</li>
+          <li>9</li>
+          <li class="reward">Free</li>
+        </ul>
+        <p class="stampcard-foot">One tap at the counter. Every point on the card can be explained.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">The work</p>
+        <h2 id="work-title">Built for real businesses, around how they already run.</h2>
+      </div>
+
+      <div class="projects">
+
+        <article class="project">
+          <div class="project-intro">
+            <p class="label">Client app and front desk console</p>
+            <h3>A veterinary clinic in Ontario</h3>
+            <p>A client app and a front desk console, built to sit alongside the clinic's existing practice software rather than replace it.</p>
+            <span class="status">Built and working, not yet in use</span>
+          </div>
+          <ul class="points">
+            <li>Clients request food and medication refills from the pet's file, and follow each request through to ready for pickup, without phoning.</li>
+            <li>The app tells clients before food or a prescription runs out.</li>
+            <li>Loyalty points are awarded at the counter with one tap, and every point a client holds can be explained.</li>
+            <li>It never calculates a vaccination due date. It only repeats what staff entered, so it cannot tell someone their dog is due when it is not.</li>
+          </ul>
+        </article>
+
+        <article class="project">
+          <div class="project-intro">
+            <p class="label">Workout app</p>
+            <h3>A personal trainer</h3>
+            <p>The trainer builds programs and assigns them, clients log their sets on their phone, and both see progress over time.</p>
+          </div>
+          <ul class="points">
+            <li>Built on the idea that clients quit when they cannot see it working, so the product is the evidence of progress, not the logging.</li>
+            <li>Works with no signal, in a basement gym, and catches up later.</li>
+            <li>Each client sees only their own data. That rule is enforced by the database, not just hidden on the screen.</li>
+          </ul>
+        </article>
+
+        <article class="project">
+          <div class="project-intro">
+            <p class="label">Website</p>
+            <h3>A memorial resin artist</h3>
+            <p>A website for a small studio making memorial pieces from resin: a gallery, a memorial wall where people add the animals they have lost, and a page of grief support resources.</p>
+          </div>
+          <ul class="points">
+            <li>Written so the owner can add photos and memorials without a developer.</li>
+            <li>A tender subject, handled plainly: no forms that silently throw away what someone wrote.</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="build" aria-labelledby="build-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">What I build</p>
+        <h2 id="build-title">Made for your business, not rented from a vendor with five thousand customers.</h2>
+      </div>
+
+      <div class="offers">
+        <div class="offer lead">
+          <p class="label">Where I start</p>
+          <h3>Loyalty and retention programs</h3>
+          <p>Points, rewards, and the reports that show who has quietly stopped coming back.</p>
+        </div>
+        <div class="offer">
+          <p class="label">For your clients and your desk</p>
+          <h3>Client apps and staff tools</h3>
+          <p>An app for your clients and the matching screen for your front desk, working alongside the systems you already use.</p>
+        </div>
+        <div class="offer">
+          <p class="label">Then kept running</p>
+          <h3>Websites, fixed or rebuilt</h3>
+          <p>Including the unglamorous part: the right address, phone numbers you can tap, and pages that do not break.</p>
+        </div>
+        <div class="offer">
+          <p class="label">The weekly chore</p>
+          <h3>Automating the repetitive work</h3>
+          <p>The task somebody does by hand every week that a small tool could do instead.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label">How I work</p>
+        <h2 id="how-title">One person, who answers.</h2>
+      </div>
+
+      <ul class="ways">
+        <li>
+          <h3>You deal with one person.</h3>
+          <p>No queue, no ticket, no explaining your business to someone new each time.</p>
+        </li>
+        <li>
+          <h3>Changes in days, not quarters.</h3>
+          <p>A request on Tuesday can be working by Friday.</p>
+        </li>
+        <li>
+          <h3>It works with what you already use.</h3>
+          <p>Your booking system, your practice software and your payment terminal stay where they are.</p>
+        </li>
+        <li>
+          <h3>Straight about limits.</h3>
+          <p>If something cannot be done, I say so, and I say why. That is worth more than a feature that half works.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band closing" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+
+      <div class="about" id="about">
+        <p class="label">About</p>
+        <p class="big">I'm Chris, based in Waterloo Region, Ontario.</p>
+        <!-- [DECIDE] About: two or three sentences in Chris's own words. Delete this block when written. -->
+        <p class="todo">[DECIDE] Two or three sentences from Chris go here: why this work, and what came before.</p>
+        <div class="price">
+          <p class="label">Price</p>
+          <p>Every project is quoted for the business.</p>
+        </div>
+      </div>
+
+      <div class="contact">
+        <div class="section-head" style="margin-bottom:0">
+          <p class="label">Get in touch</p>
+          <h2 id="contact-title">Tell me about the most repetitive thing your front desk does every week.</h2>
+        </div>
+
+        <!-- [DECIDE] Replace YOUR_FORM_ID with the real Formspree form ID. The form switches on by itself once it is replaced. -->
+        <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <p class="todo" id="form-off" hidden>[DECIDE] This form is not connected yet, so nothing typed here would be sent. It switches on once the form service is set up.</p>
+          <div class="row">
+            <div class="field">
+              <label for="f-name">Your name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="f-email">Email</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-business">Business <span class="opt">(optional)</span></label>
+            <input id="f-business" name="business" type="text" autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="f-message">What takes up your week?</label>
+            <textarea id="f-message" name="message" required></textarea>
+          </div>
+          <div>
+            <button class="btn btn-primary" id="f-send" type="submit">Send message</button>
+          </div>
+          <p class="form-note" id="form-status" role="status" aria-live="polite">I reply personally, usually within a day.</p>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><span data-brand>crowdotcom</span> · Waterloo Region, Ontario</span>
+    <span>Loyalty programs, client apps and websites for small businesses.</span>
+  </div>
+</footer>
+
+<script>
+  // [DECIDE] The business name. Change it here and it updates everywhere on the page.
+  const BRAND = "crowdotcom";
+
+  document.querySelectorAll("[data-brand]").forEach(el => { el.textContent = BRAND; });
+  document.title = BRAND;
+
+  // Contact form. Posts to Formspree, which forwards to Chris's email, so the
+  // address never appears in this page. Until a real form ID is set, the form
+  // says so and cannot be sent, so nobody writes a message that goes nowhere.
+  const form = document.getElementById("contact-form");
+  const send = document.getElementById("f-send");
+  const status = document.getElementById("form-status");
+  const connected = !form.action.includes("YOUR_FORM_ID");
+
+  if (!connected) {
+    document.getElementById("form-off").hidden = false;
+    send.disabled = true;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!connected) return;
+
+    send.disabled = true;
+    send.textContent = "Sending";
+    status.className = "form-note";
+    status.textContent = "";
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      });
+      if (!response.ok) throw new Error("status " + response.status);
+
+      const done = document.createElement("div");
+      done.className = "form-done";
+      done.setAttribute("role", "status");
+      done.innerHTML = "<strong>Message sent.</strong> Thanks, I'll reply to the email you gave.";
+      form.replaceWith(done);
+    } catch (error) {
+      send.disabled = false;
+      send.textContent = "Send message";
+      status.className = "form-error";
+      status.textContent = "That did not go through. Check your connection and try again. What you wrote is still here.";
+    }
+  });
+</script>
+</body>
+</html>
