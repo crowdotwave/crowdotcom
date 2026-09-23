@@ -4,8 +4,8 @@ This is the one source both homepage builds work from. It says **what the page
 says and who it is for**. It deliberately says nothing about how it should look:
 the visual design is what the two builds are testing.
 
-Status: **draft, waiting on Chris.** Anything marked `[DECIDE]` needs an answer
-before the page ships. A build can use the placeholder shown in the meantime.
+Status: **ready to build.** Anything still marked `[DECIDE]` needs an answer
+before the page goes live. A build uses the placeholder shown in the meantime.
 
 ---
 
@@ -47,9 +47,10 @@ Working title for the role: **Loyalty Operations & Digital Product Specialist.**
 
 ## 3. The proof: three projects
 
-Real work, described honestly. **No client is named** until they have agreed to
-it. `[DECIDE]` for each: whether to name them later, and whether screenshots are
-allowed.
+Real work, described honestly. **No client is named, and no screenshots are
+shown.** Describe each project in words only. Do not include details that would
+identify a client, such as a town, a street, a staff member's name, or a
+software vendor's product name.
 
 ### A veterinary clinic in Ontario
 
@@ -104,7 +105,9 @@ slogans.
   software, your payment terminal stay where they are.
 - **Straight about limits.** If something cannot be done, Chris says so, and says
   why. That is worth more than a feature that half works.
-- **You own it.** `[DECIDE]` exact wording on ownership if the work ends.
+
+Left off the page until decided: what the client owns if the work ends (see
+section 9). Do not write an ownership promise.
 
 ## 5. Homepage content, draft copy
 
@@ -128,19 +131,37 @@ two or three strongest points)
 
 **What I build** (the four offers in section 2, one or two sentences each)
 
-**How I work** (the five points in section 4)
+**How I work** (the four points in section 4)
+
+**Price**
+
+> Every project is quoted for the business.
+
+One line, placed near the contact section. No figures, no tiers.
 
 **About**
 
-> I'm Chris, based in Waterloo Region, Ontario. `[DECIDE]` two or three
-> sentences in Chris's own voice: why this work, what came before.
+> I'm Chris, based in Waterloo Region, Ontario.
+
+`[DECIDE]` Chris will write the rest later. Leave a clearly marked placeholder
+for two or three sentences, and design the section so it looks finished with
+only the one line above.
 
 **Contact**
 
 > Tell me about the most repetitive thing your front desk does every week.
 
-`[DECIDE]` contact method. Placeholder: an email link to `hello@example.com`.
-**Do not publish Chris's personal email** without asking.
+A short form that sends to Chris's email: name, email, business name
+(optional), and a message box. The page is static, so the form posts to a form
+service. Use Formspree, which everdeencrafts already uses:
+
+- Form `action` is `https://formspree.io/f/YOUR_FORM_ID`, marked `[DECIDE]`.
+- Until the real ID is in, the form says plainly that it is not connected yet,
+  so nobody writes a message that goes nowhere. It switches on by itself once
+  the ID is replaced.
+- On success, show a plain confirmation in the page rather than leaving it.
+- **Chris's email address never appears in the page source.** The form service
+  holds it.
 
 ## 6. Tone and words
 
@@ -193,13 +214,18 @@ to the clinic.
 think "this person is serious"? Which one looks like every other AI-made site?
 Then show both to one or two people without saying which is which.
 
-## 9. Open questions for Chris
+## 9. Decisions
+
+Settled:
+
+- **Clients:** never named, no screenshots.
+- **Contact:** a form that sends to Chris's email (section 5).
+- **Price:** "Every project is quoted for the business." No figures.
+
+Still open:
 
 1. Business name. `crowdotcom` is a placeholder, and the page should make it
-   easy to swap.
-2. Contact method: email, a form, a booking link, or a phone number.
-3. Whether any client may be named, and whether screenshots may be shown.
-4. The About paragraph, in your own words.
-5. Whether to mention price at all. Suggestion: no, "every project is quoted
-   for the business" is enough for now.
-6. Ownership wording if a client stops working with you.
+   easy to swap: set it in one place near the top of the file.
+2. The About paragraph, in Chris's own words.
+3. Ownership if a client stops working with Chris. Off the page until decided.
+4. The Formspree form ID, once Chris makes the account.
