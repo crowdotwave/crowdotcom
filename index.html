@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>crowdotcom</title>
+<meta name="description" content="Loyalty programs, client apps and websites for small businesses in Waterloo Region, built and run by one person.">
+<meta name="theme-color" content="#07080d">
+<style>
+  /* Fonts are hosted in this repo (assets/fonts, SIL Open Font License) so the
+     page never waits on a third party. Latin subset only. */
+  @font-face {
+    font-family: "Mona Sans";
+    src: url("assets/fonts/monasans-latin.woff2") format("woff2");
+    font-weight: 200 900;
+    font-stretch: 75% 125%;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Martian Mono";
+    src: url("assets/fonts/martianmono-latin.woff2") format("woff2");
+    font-weight: 300 600;
+    font-stretch: 75% 112.5%;
+    font-display: swap;
+  }
+
+  /* One dark world, on purpose. Three accents, and each one has a single job:
+       teal     it works, act here (buttons, live and done states)
+       purple   loyalty (stamps, points)
+       magenta  needs attention (a reward waiting, a drifting client,
+                an unfinished [DECIDE] placeholder)
+     Nothing else on the page is coloured. */
+  :root {
+    --void: #07080d;
+    --base: #0b0d14;
+    --panel: #10131c;
+    --panel-2: #161a25;
+    --line: #232938;
+    --line-soft: #191e2a;
+    --text: #eceef4;
+    --soft: #a4abba;
+    --dim: #6e7689;
+
+    --teal: #2de2c4;
+    --teal-ink: #03211c;
+    --teal-glow: rgba(45, 226, 196, .16);
+    --purple: #9b7bff;
+    --purple-soft: rgba(155, 123, 255, .14);
+    --purple-glow: rgba(155, 123, 255, .22);
+    --magenta: #ff4fae;
+    --magenta-soft: rgba(255, 79, 174, .12);
+
+    --sans: "Mona Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    --wide: 76rem;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --radius: 14px;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; background: var(--void); }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--text);
+    font: 400 1.0625rem/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--teal); text-underline-offset: .2em; }
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+  ::selection { background: var(--purple); color: var(--void); }
+
+  .wrap { max-width: var(--wide); margin-inline: auto; padding-inline: var(--gutter); }
+
+  h1, h2, h3 { margin: 0; font-family: var(--sans); text-wrap: balance; }
+  p { margin: 0; }
+
+  /* Section labels read as the anchor each section lives at, which is true:
+     they are the page's own addresses, not decorative numbering. */
+  .path {
+    font: 400 .72rem/1.2 var(--mono);
+    font-stretch: 87.5%;
+    letter-spacing: .04em;
+    color: var(--dim);
+  }
+  .path b { color: var(--teal); font-weight: 400; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: .45rem;
+    font: 400 .68rem/1 var(--mono);
+    font-stretch: 87.5%;
+    letter-spacing: .03em;
+    color: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .42rem .7rem;
+    white-space: nowrap;
+  }
+  .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--dim); }
+  .tag.live::before { background: var(--teal); box-shadow: 0 0 10px var(--teal); }
+  .tag.wait::before { background: var(--magenta); box-shadow: 0 0 10px var(--magenta); }
+
+  /* Header --------------------------------------------------------------- */
+
+  .top {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: rgba(7, 8, 13, .78);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .8rem; }
+
+  .brand {
+    display: inline-flex; align-items: center; gap: .55rem;
+    font-weight: 750; font-stretch: 118%; font-size: 1.1rem; letter-spacing: -.01em;
+    color: var(--text); text-decoration: none;
+  }
+  .brand-mark {
+    width: 11px; height: 11px; border-radius: 3px;
+    background: var(--teal);
+    box-shadow: 0 0 14px var(--teal-glow), 0 0 2px var(--teal);
+  }
+
+  .nav { display: flex; align-items: center; gap: 1.6rem; }
+  .nav a:not(.btn) { color: var(--soft); text-decoration: none; font-size: .92rem; }
+  .nav a:not(.btn):hover { color: var(--text); }
+  @media (max-width: 46rem) { .nav a:not(.btn) { display: none; } }
+
+  /* Buttons -------------------------------------------------------------- */
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    min-height: 2.9rem; padding: .75rem 1.3rem;
+    font: 600 .98rem/1 var(--sans);
+    border-radius: 10px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn-go { background: var(--teal); color: var(--teal-ink); box-shadow: 0 0 0 0 var(--teal-glow); }
+  .btn-go:hover { box-shadow: 0 0 0 6px var(--teal-glow); }
+  .btn-go:active { transform: translateY(1px); }
+  .btn-line { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-line:hover { border-color: var(--soft); }
+  .btn-small { min-height: 2.35rem; padding: .5rem .95rem; font-size: .88rem; }
+  .btn[disabled] { opacity: .4; cursor: not-allowed; box-shadow: none; }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+  /* Hero ----------------------------------------------------------------- */
+
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line-soft); }
+
+  /* A faint drafting grid, fading out from the top. */
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(120% 80% at 70% 0%, #000 30%, transparent 75%);
+            mask-image: radial-gradient(120% 80% at 70% 0%, #000 30%, transparent 75%);
+    pointer-events: none;
+  }
+
+  .hero .wrap {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    gap: clamp(2.5rem, 4.5vw, 4rem);
+    align-items: center;
+    padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3.5rem, 8vw, 6.5rem);
+  }
+  @media (max-width: 60rem) { .hero .wrap { grid-template-columns: 1fr; } }
+
+  .hero-copy { display: flex; flex-direction: column; gap: 1.6rem; }
+
+  .role { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+  .hero h1 {
+    font-size: clamp(2.1rem, 1.3rem + 2.9vw, 3.55rem);
+    font-weight: 780;
+    font-stretch: 108%;
+    line-height: 1.02;
+    letter-spacing: -.035em;
+  }
+  .hero h1 .run { display: block; color: var(--soft); font-weight: 600; font-stretch: 100%; letter-spacing: -.03em; }
+  .hero h1 .run em { font-style: normal; color: var(--teal); }
+
+  .lede { font-size: clamp(1.08rem, 1rem + .35vw, 1.25rem); color: var(--soft); max-width: 31rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+  /* The desk console: an interactive demo of what the hero promises. */
+
+  .console-wrap { position: relative; }
+  .console-wrap::before {
+    content: "";
+    position: absolute; inset: -12% -8%;
+    background:
+      radial-gradient(40% 45% at 30% 35%, var(--purple-glow), transparent 70%),
+      radial-gradient(35% 40% at 75% 75%, rgba(45, 226, 196, .10), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+  }
+
+  .console {
+    position: relative;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 40px 80px -40px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);
+    overflow: hidden;
+  }
+
+  .console-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    padding: .8rem 1rem;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,.015);
+  }
+  .console-title { display: flex; align-items: center; gap: .6rem; font: 400 .72rem/1 var(--mono); font-stretch: 87.5%; color: var(--soft); }
+  .dots { display: inline-flex; gap: 5px; }
+  .dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+
+  .console-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+  @media (max-width: 34rem) { .console-body { grid-template-columns: 1fr; } }
+
+  .client {
+    padding: 1.2rem;
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  @media (max-width: 34rem) { .client { border-right: 0; border-bottom: 1px solid var(--line); } }
+
+  .client-head { display: flex; align-items: center; gap: .7rem; }
+  .avatar {
+    width: 2.3rem; height: 2.3rem; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--purple-soft); color: var(--purple);
+    font-weight: 700; font-size: .85rem;
+    border: 1px solid rgba(155,123,255,.35);
+  }
+  .client-name { font-weight: 650; font-size: 1rem; line-height: 1.2; }
+  .client-sub { font: 400 .66rem/1.3 var(--mono); font-stretch: 87.5%; color: var(--dim); }
+
+  .stamps {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .45rem;
+  }
+  .stamps li {
+    aspect-ratio: 1; max-width: 100%;
+    border-radius: 50%;
+    border: 1.5px dashed var(--line);
+    display: grid; place-items: center;
+    color: var(--dim);
+    font: 400 .6rem/1 var(--mono);
+    transition: background .25s ease, border-color .25s ease;
+  }
+  .stamps li.on {
+    border: 1.5px solid var(--purple);
+    background: var(--purple-soft);
+    color: var(--purple);
+    box-shadow: 0 0 12px -2px var(--purple-glow);
+  }
+  .stamps li svg { width: 52%; height: 52%; }
+  .stamps li.pop { animation: pop .45s cubic-bezier(.2, 1.5, .4, 1); }
+  @keyframes pop { from { transform: scale(1.4) rotate(-14deg); } to { transform: none; } }
+
+  .meter { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+  .meter-count { font-weight: 750; font-stretch: 110%; font-size: 1.5rem; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .meter-count span { color: var(--dim); font-weight: 500; font-size: 1rem; }
+  .meter-note { font: 400 .66rem/1.3 var(--mono); font-stretch: 87.5%; color: var(--dim); text-align: right; }
+
+  .reward {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .65rem .8rem;
+    font-size: .85rem; color: var(--soft);
+    display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  }
+  .reward.ready {
+    border-color: var(--magenta);
+    background: var(--magenta-soft);
+    color: var(--text);
+    box-shadow: 0 0 24px -8px var(--magenta);
+  }
+  .reward.ready b { color: var(--magenta); }
+
+  .ledger { padding: 1.2rem; display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
+  .ledger-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+  .ledger-head h2 { font-size: .9rem; font-weight: 650; letter-spacing: 0; }
+
+  .rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font: 400 .7rem/1.35 var(--mono); font-stretch: 87.5%; }
+  .rows li {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr) 1.9rem 1.5rem;
+    gap: .5rem;
+    padding: .5rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .rows li:first-child { padding-top: 0; }
+  .rows .when { color: var(--dim); }
+  .rows .what { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rows .delta, .rows .bal { text-align: right; }
+  .rows .delta.plus { color: var(--purple); }
+  .rows .delta.minus { color: var(--magenta); }
+  .rows li.new { animation: slide .4s ease-out; }
+  @keyframes slide { from { transform: translateY(-6px); background: rgba(155,123,255,.08); } to { transform: none; background: transparent; } }
+
+  .console-foot {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem;
+    padding: .9rem 1rem;
+    border-top: 1px solid var(--line);
+    background: rgba(0,0,0,.18);
+  }
+  .console-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .console-hint { font: 400 .66rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); max-width: 17rem; }
+
+  .drift {
+    display: flex; gap: .75rem; align-items: flex-start;
+    margin: 0 1rem 1rem;
+    padding: .75rem .85rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 79, 174, .35);
+    background: var(--magenta-soft);
+    font-size: .85rem; color: var(--soft);
+  }
+  .drift b { color: var(--text); font-weight: 650; }
+  .drift-dot { flex: none; width: 8px; height: 8px; margin-top: .45rem; border-radius: 50%; background: var(--magenta); box-shadow: 0 0 10px var(--magenta); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stamps li.pop, .rows li.new { animation: none; }
+    .stamps li { transition: none; }
+  }
+
+  /* Sections ------------------------------------------------------------- */
+
+  section { scroll-margin-top: 4.5rem; }
+  .band { padding-block: clamp(4rem, 9vw, 7rem); border-bottom: 1px solid var(--line-soft); }
+
+  .head { display: flex; flex-direction: column; gap: 1rem; max-width: 44rem; margin-bottom: clamp(2.25rem, 5vw, 3.5rem); }
+  .head h2 {
+    font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.1rem);
+    font-weight: 760;
+    font-stretch: 110%;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+  }
+  .head p { color: var(--soft); max-width: 36rem; }
+
+  /* The work: each project as a case file with the mechanism drawn. */
+
+  .cases { display: flex; flex-direction: column; gap: 1rem; }
+
+  .case {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    background: var(--base);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  @media (max-width: 56rem) { .case { grid-template-columns: 1fr; } }
+
+  .case-text { padding: clamp(1.4rem, 3vw, 2.2rem); display: flex; flex-direction: column; gap: 1rem; }
+  .case-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; }
+  .case h3 { font-size: clamp(1.4rem, 1.15rem + 1vw, 1.85rem); font-weight: 720; font-stretch: 108%; letter-spacing: -.025em; line-height: 1.12; }
+  .case-sum { color: var(--soft); }
+
+  .facts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .7rem; }
+  .facts li { display: grid; grid-template-columns: .9rem minmax(0, 1fr); gap: .7rem; font-size: .98rem; }
+  .facts li::before { content: ""; width: 7px; height: 7px; margin-top: .6em; border-radius: 2px; background: var(--teal); }
+
+  /* The drawn mechanism. HTML rather than an image so it reflows. */
+  .flow {
+    position: relative;
+    background:
+      linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px) 0 0 / 28px 28px,
+      var(--panel);
+    border-left: 1px solid var(--line);
+    padding: clamp(1.4rem, 3vw, 2.2rem);
+    display: flex; flex-direction: column; justify-content: center; gap: 1.1rem;
+  }
+  @media (max-width: 56rem) { .flow { border-left: 0; border-top: 1px solid var(--line); } }
+
+  .flow-caption { font: 400 .68rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); }
+
+  .track { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .track li {
+    position: relative;
+    display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) auto; gap: .8rem; align-items: center;
+    padding: .55rem 0;
+    font-size: .95rem; color: var(--soft);
+  }
+  .track li::before {
+    content: ""; justify-self: center;
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--line); background: var(--panel);
+    position: relative; z-index: 1;
+  }
+  .track li:not(:last-child)::after {
+    content: ""; position: absolute; left: calc(.75rem - 1px); top: calc(50% + 6px);
+    width: 2px; height: 100%; background: var(--line);
+  }
+  .track li.done::before { border-color: var(--teal); background: var(--teal); }
+  .track li.done:not(:last-child)::after { background: linear-gradient(var(--teal), var(--line)); }
+  .track li.now { color: var(--text); font-weight: 600; }
+  .track li.now::before { border-color: var(--teal); background: var(--panel); box-shadow: 0 0 0 4px var(--teal-glow); }
+  .track .who { font: 400 .64rem/1 var(--mono); font-stretch: 87.5%; color: var(--dim); }
+
+  /* What I build ----------------------------------------------------------- */
+
+  .offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  @media (max-width: 60rem) { .offers { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 40rem) { .offers { grid-template-columns: 1fr; } }
+
+  .offer {
+    background: var(--base);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1.4rem, 3vw, 1.9rem);
+    display: flex; flex-direction: column; gap: .8rem;
+  }
+  .offer h3 { font-size: 1.28rem; font-weight: 700; font-stretch: 106%; letter-spacing: -.02em; line-height: 1.2; }
+  .offer p { color: var(--soft); font-size: 1rem; }
+  .offer .path { margin-bottom: .2rem; }
+
+  .offer.lead {
+    grid-row: span 2;
+    background:
+      radial-gradient(120% 70% at 0% 0%, var(--purple-soft), transparent 60%),
+      var(--base);
+    border-color: rgba(155, 123, 255, .4);
+    justify-content: space-between;
+  }
+  .offer.lead h3 { font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem); font-stretch: 112%; }
+  .offer.lead .path b { color: var(--purple); }
+  @media (max-width: 60rem) { .offer.lead { grid-row: auto; grid-column: 1 / -1; } }
+
+  /* A mini points ledger inside the loyalty card: the idea in one glance. */
+  .mini-ledger { list-style: none; margin: 0; padding: .9rem 1rem; border-radius: 10px; background: rgba(0,0,0,.25); border: 1px solid var(--line); font: 400 .68rem/1.4 var(--mono); font-stretch: 87.5%; display: grid; gap: .35rem; }
+  .mini-ledger li { display: flex; justify-content: space-between; gap: 1rem; color: var(--soft); }
+  .mini-ledger li span:last-child { color: var(--purple); font-variant-numeric: tabular-nums; }
+  .mini-ledger li.fix span:last-child { color: var(--magenta); }
+  .mini-ledger li.sum { border-top: 1px solid var(--line); padding-top: .4rem; color: var(--text); }
+  .mini-ledger li.sum span:last-child { color: var(--text); }
+
+  /* Rented vs built ---------------------------------------------------------- */
+
+  .versus { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--base); }
+  .versus-row {
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.2fr);
+    border-top: 1px solid var(--line);
+  }
+  .versus-row:first-child { border-top: 0; }
+  .versus-row > * { padding: 1.1rem clamp(1rem, 2.5vw, 1.6rem); }
+  .versus-row.labels > * { font: 400 .68rem/1.3 var(--mono); font-stretch: 87.5%; color: var(--dim); padding-block: .9rem; }
+  .versus-row.labels .me { color: var(--teal); }
+  .versus-q { font-weight: 650; }
+  .versus-them { color: var(--dim); }
+  .versus-me { color: var(--text); background: rgba(45, 226, 196, .035); border-left: 1px solid var(--line); }
+  .versus-me b { font-weight: 650; }
+  .versus-row.labels .me { background: rgba(45, 226, 196, .035); border-left: 1px solid var(--line); }
+
+  @media (max-width: 44rem) {
+    .versus-row { grid-template-columns: 1fr; }
+    .versus-row.labels { display: none; }
+    .versus-row > * { padding-block: .35rem; }
+    .versus-q { padding-top: 1.1rem; }
+    .versus-them::before { content: "Rented platform: "; color: var(--dim); font: 400 .66rem/1 var(--mono); font-stretch: 87.5%; display: block; margin-bottom: .3rem; }
+    .versus-me { border-left: 0; background: transparent; padding-bottom: 1.1rem; }
+    .versus-me::before { content: "With me: "; color: var(--teal); font: 400 .66rem/1 var(--mono); font-stretch: 87.5%; display: block; margin-bottom: .3rem; }
+  }
+
+  /* Starting: a real sequence, so it is numbered. */
+  .steps { list-style: none; margin: clamp(2.5rem, 5vw, 3.5rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; counter-reset: step; }
+  @media (max-width: 52rem) { .steps { grid-template-columns: 1fr; } }
+  .steps li { counter-increment: step; border-top: 1px solid var(--line); padding-top: 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+  .steps li::before { content: "0" counter(step); font: 400 .72rem/1 var(--mono); color: var(--teal); }
+  .steps h3 { font-size: 1.15rem; font-weight: 680; letter-spacing: -.015em; }
+  .steps p { color: var(--soft); font-size: .98rem; }
+
+  /* About + contact ------------------------------------------------------------ */
+
+  .closing .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: start;
+  }
+  @media (max-width: 58rem) { .closing .wrap { grid-template-columns: 1fr; } }
+
+  .about { display: flex; flex-direction: column; gap: 1.3rem; }
+  .about .hello {
+    font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.5rem);
+    font-weight: 760; font-stretch: 110%;
+    letter-spacing: -.03em; line-height: 1.08;
+    text-wrap: balance;
+  }
+  .about .hello span { color: var(--soft); font-weight: 600; font-stretch: 100%; }
+
+  .todo {
+    border: 1px dashed var(--magenta);
+    background: var(--magenta-soft);
+    color: #ffc4e3;
+    border-radius: 10px;
+    padding: .8rem 1rem;
+    font: 400 .72rem/1.55 var(--mono);
+    font-stretch: 87.5%;
+  }
+
+  .price { border-top: 1px solid var(--line); padding-top: 1.2rem; display: flex; flex-direction: column; gap: .5rem; }
+  .price p:not(.path) { font-size: 1.15rem; font-weight: 600; }
+
+  .contact {
+    position: relative;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: clamp(1.4rem, 4vw, 2.4rem);
+    display: flex; flex-direction: column; gap: 1.5rem;
+    box-shadow: 0 40px 80px -50px rgba(45, 226, 196, .25);
+  }
+  .contact h2 { font-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.1rem); font-weight: 740; font-stretch: 108%; letter-spacing: -.025em; line-height: 1.12; }
+
+  form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+  @media (max-width: 34rem) { .row { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: .45rem; }
+  .field label { font-size: .9rem; font-weight: 600; }
+  .field .opt { color: var(--dim); font-weight: 400; }
+
+  input, textarea {
+    font: inherit; font-size: 1rem;
+    color: var(--text);
+    background: var(--void);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .75rem .9rem;
+    width: 100%;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  input::placeholder, textarea::placeholder { color: var(--dim); }
+  input:focus, textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+  textarea { min-height: 8.5rem; resize: vertical; }
+
+  .form-note { font-size: .9rem; color: var(--dim); }
+  .form-error { font-size: .95rem; color: var(--text); border-left: 2px solid var(--magenta); padding-left: .75rem; }
+  .form-done { border: 1px solid var(--teal); background: rgba(45,226,196,.07); border-radius: 12px; padding: 1.1rem 1.2rem; }
+  .form-done strong { color: var(--teal); }
+
+  footer .wrap {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem 2rem;
+    padding-block: 2rem 2.6rem;
+    color: var(--dim); font-size: .88rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span data-brand>crowdotcom</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#build">What I build</a>
+      <a href="#how">How I work</a>
+      <a class="btn btn-go btn-small" href="#contact">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero ================================================================ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+
+      <div class="hero-copy">
+        <div class="role">
+          <span class="tag live">Loyalty Operations &amp; Digital Product Specialist</span>
+          <span class="tag">Waterloo Region, Ontario</span>
+        </div>
+        <h1 id="hero-title">
+          Loyalty programs, client apps and websites, built for your business
+          <span class="run">and run by <em>the person who built them.</em></span>
+        </h1>
+        <p class="lede">I build the systems that bring your clients back, and I stay to keep them working.</p>
+        <div class="actions">
+          <a class="btn btn-go" href="#contact">Get in touch</a>
+          <a class="btn btn-line" href="#work">See the work</a>
+        </div>
+      </div>
+
+      <div class="console-wrap">
+        <div class="console" id="demo">
+          <div class="console-bar">
+            <span class="console-title"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>front desk · loyalty</span>
+            <span class="tag">Try it · example data</span>
+          </div>
+
+          <div class="console-body">
+            <div class="client">
+              <div class="client-head">
+                <span class="avatar" aria-hidden="true">SR</span>
+                <div>
+                  <p class="client-name">Sam R.</p>
+                  <p class="client-sub">example client</p>
+                </div>
+              </div>
+
+              <ul class="stamps" id="stamps" role="img" aria-label="Visit card"></ul>
+
+              <div class="meter">
+                <p class="meter-count"><output id="count">7</output><span> / 10</span></p>
+                <p class="meter-note">visits to<br>next reward</p>
+              </div>
+
+              <div class="reward" id="reward"><span>Reward at 10 visits</span><b>3 to go</b></div>
+            </div>
+
+            <div class="ledger">
+              <div class="ledger-head">
+                <h2>Points history</h2>
+                <span class="client-sub">every point explained</span>
+              </div>
+              <ul class="rows" id="rows" aria-live="polite" aria-label="Points history, newest first"></ul>
+            </div>
+          </div>
+
+          <div class="drift">
+            <span class="drift-dot" aria-hidden="true"></span>
+            <p><b>4 clients</b> have a reward waiting and have not been in for 90 days. One note brings them back.</p>
+          </div>
+
+          <div class="console-foot">
+            <div class="console-actions">
+              <button class="btn btn-go btn-small" id="award" type="button">Award a visit</button>
+              <button class="btn btn-line btn-small" id="undo" type="button" disabled>Undo</button>
+            </div>
+            <p class="console-hint">Undo never deletes. It adds a correcting line, so the history always adds up.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- The work ============================================================ -->
+  <section class="band" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="path">/<b>work</b></p>
+        <h2 id="work-title">Built for real businesses, around how they already run.</h2>
+      </div>
+
+      <div class="cases">
+
+        <article class="case">
+          <div class="case-text">
+            <div class="case-meta">
+              <span class="path">Client app + front desk console</span>
+              <span class="tag wait">Built and working, not yet in use</span>
+            </div>
+            <h3>A veterinary clinic in Ontario</h3>
+            <p class="case-sum">A client app and a front desk console, built to sit alongside the clinic's existing practice software rather than replace it.</p>
+            <ul class="facts">
+              <li>Clients request food and medication refills from the pet's file, and follow each request through to ready for pickup, without phoning.</li>
+              <li>The app tells clients before food or a prescription runs out.</li>
+              <li>It never calculates a vaccination due date. It only repeats what staff entered, so it cannot tell someone their dog is due when it is not.</li>
+            </ul>
+          </div>
+          <div class="flow" aria-label="How a refill request moves">
+            <p class="flow-caption">One refill request, start to finish</p>
+            <ol class="track">
+              <li class="done"><span>Requested in the app</span><span class="who">client</span></li>
+              <li class="done"><span>Being looked at</span><span class="who">desk</span></li>
+              <li class="done"><span>Approved</span><span class="who">vet</span></li>
+              <li class="now"><span>Ready for pickup</span><span class="who">desk</span></li>
+              <li><span>Collected, points awarded in one tap</span><span class="who">counter</span></li>
+            </ol>
+            <p class="flow-caption">The client sees every step. No phone call at any of them.</p>
+          </div>
+        </article>
+
+        <article class="case">
+          <div class="case-text">
+            <div class="case-meta">
+              <span class="path">Workout app</span>
+            </div>
+            <h3>A personal trainer</h3>
+            <p class="case-sum">The trainer builds programs and assigns them, clients log their sets on their phone, and both see progress over time.</p>
+            <ul class="facts">
+              <li>Built on the idea that clients quit when they cannot see it working, so the product is the evidence of progress, not the logging.</li>
+              <li>Each client sees only their own data. That rule is enforced by the database, not just hidden on the screen.</li>
+            </ul>
+          </div>
+          <div class="flow" aria-label="How a set is saved with no signal">
+            <p class="flow-caption">A set logged in a basement gym</p>
+            <ol class="track">
+              <li class="done"><span>Logged on the phone, no signal</span><span class="who">client</span></li>
+              <li class="done"><span>Saved on the phone first</span><span class="who">offline</span></li>
+              <li class="now"><span>Signal back, sent automatically</span><span class="who">sync</span></li>
+              <li><span>On the trainer's progress charts</span><span class="who">trainer</span></li>
+            </ol>
+            <p class="flow-caption">Nothing is lost when the gym has no reception.</p>
+          </div>
+        </article>
+
+        <article class="case">
+          <div class="case-text">
+            <div class="case-meta">
+              <span class="path">Website</span>
+            </div>
+            <h3>A memorial resin artist</h3>
+            <p class="case-sum">A website for a small studio making memorial pieces from resin: a gallery, a memorial wall where people add the animals they have lost, and a page of grief support resources.</p>
+            <ul class="facts">
+              <li>Written so the owner can add photos and memorials without a developer.</li>
+              <li>A tender subject, handled plainly: no forms that silently throw away what someone wrote.</li>
+            </ul>
+          </div>
+          <div class="flow" aria-label="How a memorial reaches the wall">
+            <p class="flow-caption">A memorial, from visitor to wall</p>
+            <ol class="track">
+              <li class="done"><span>A visitor writes about their animal</span><span class="who">visitor</span></li>
+              <li class="now"><span>Arrives in the owner's inbox first</span><span class="who">owner</span></li>
+              <li><span>Added to the wall by the owner</span><span class="who">owner</span></li>
+            </ol>
+            <p class="flow-caption">Nothing appears on the site until the owner has seen it.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- What I build ======================================================== -->
+  <section class="band" id="build" aria-labelledby="build-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="path">/<b>build</b></p>
+        <h2 id="build-title">Made for your business, not rented from a vendor with five thousand customers.</h2>
+      </div>
+
+      <div class="offers">
+        <div class="offer lead">
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="path">/build/<b>loyalty</b></p>
+            <h3>Loyalty and retention programs</h3>
+            <p>Points, rewards, and the reports that show who has quietly stopped coming back.</p>
+          </div>
+          <ul class="mini-ledger" aria-label="Example of a points history that adds up">
+            <li><span>Visit</span><span>+1</span></li>
+            <li><span>Refill</span><span>+1</span></li>
+            <li class="fix"><span>Correction, tapped twice</span><span>&minus;1</span></li>
+            <li><span>Visit</span><span>+1</span></li>
+            <li class="sum"><span>Balance</span><span>2</span></li>
+          </ul>
+        </div>
+        <div class="offer">
+          <p class="path">/build/<b>apps</b></p>
+          <h3>Client apps and staff tools</h3>
+          <p>An app for your clients and the matching screen for your front desk, working alongside the systems you already use.</p>
+        </div>
+        <div class="offer">
+          <p class="path">/build/<b>web</b></p>
+          <h3>Websites, fixed or rebuilt, then kept running</h3>
+          <p>Including the unglamorous part: the right address, phone numbers you can tap, and pages that do not break.</p>
+        </div>
+        <div class="offer">
+          <p class="path">/build/<b>automation</b></p>
+          <h3>Automating the repetitive work</h3>
+          <p>The task somebody does by hand every week that a small tool could do instead.</p>
+        </div>
+        <div class="offer">
+          <p class="path">/build/<b>your-idea</b></p>
+          <h3>Something that does not fit a box</h3>
+          <p>If it saves your business time or money and a small system could do it, it is worth a conversation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How I work ========================================================== -->
+  <section class="band" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="head">
+        <p class="path">/<b>how</b></p>
+        <h2 id="how-title">One person, who answers.</h2>
+        <p>What changes when the person who built your system is the one you call.</p>
+      </div>
+
+      <div class="versus" role="table" aria-label="A rented platform compared with working with me">
+        <div class="versus-row labels" role="row">
+          <span role="columnheader"></span>
+          <span role="columnheader">A platform with thousands of customers</span>
+          <span role="columnheader" class="me">With me</span>
+        </div>
+        <div class="versus-row" role="row">
+          <span class="versus-q" role="rowheader">Who you deal with</span>
+          <span class="versus-them" role="cell">A support queue, and someone new each time</span>
+          <span class="versus-me" role="cell"><b>One person.</b> No queue, no ticket, no explaining your business again.</span>
+        </div>
+        <div class="versus-row" role="row">
+          <span class="versus-q" role="rowheader">When you need a change</span>
+          <span class="versus-them" role="cell">It goes on their roadmap, if it suits everyone else</span>
+          <span class="versus-me" role="cell"><b>Changes in days, not quarters.</b> A request on Tuesday can be working by Friday.</span>
+        </div>
+        <div class="versus-row" role="row">
+          <span class="versus-q" role="rowheader">Your existing systems</span>
+          <span class="versus-them" role="cell">Replaced, or worked around</span>
+          <span class="versus-me" role="cell"><b>They stay where they are.</b> Your booking system, practice software and payment terminal keep working.</span>
+        </div>
+        <div class="versus-row" role="row">
+          <span class="versus-q" role="rowheader">When something cannot be done</span>
+          <span class="versus-them" role="cell">An upgrade tier, or silence</span>
+          <span class="versus-me" role="cell"><b>A straight answer, and why.</b> That is worth more than a feature that half works.</span>
+        </div>
+      </div>
+
+      <!-- [DECIDE] New copy, not in the brief: confirm these three steps match how Chris wants to start. -->
+      <ol class="steps">
+        <li>
+          <h3>Tell me the repetitive thing</h3>
+          <p>The phone calls, the spreadsheet, the task that eats an afternoon every week.</p>
+        </li>
+        <li>
+          <h3>I see how your desk works now</h3>
+          <p>What you already use stays. The new piece is built around it, not the other way round.</p>
+        </li>
+        <li>
+          <h3>You try a working version</h3>
+          <p>Something real in your hands, changed as you use it, and kept running after.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- About + contact ===================================================== -->
+  <section class="band closing" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+
+      <div class="about" id="about">
+        <p class="path">/<b>about</b></p>
+        <p class="hello">I'm Chris, <span>based in Waterloo Region, Ontario.</span></p>
+        <!-- [DECIDE] About: two or three sentences in Chris's own words. Delete this block when written. -->
+        <p class="todo">[DECIDE] Two or three sentences from Chris: why this work, and what came before.</p>
+        <div class="price">
+          <p class="path">/<b>price</b></p>
+          <p>Every project is quoted for the business.</p>
+        </div>
+      </div>
+
+      <div class="contact">
+        <div class="head" style="margin-bottom:0">
+          <p class="path">/<b>contact</b></p>
+          <h2 id="contact-title">Tell me about the most repetitive thing your front desk does every week.</h2>
+        </div>
+
+        <!-- [DECIDE] Replace YOUR_FORM_ID with the real Formspree form ID. The form switches on by itself once it is replaced. -->
+        <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <p class="todo" id="form-off" hidden>[DECIDE] This form is not connected yet, so nothing typed here would be sent. It switches on once the form service is set up.</p>
+          <div class="row">
+            <div class="field">
+              <label for="f-name">Your name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="f-email">Email</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-business">Business <span class="opt">(optional)</span></label>
+            <input id="f-business" name="business" type="text" autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="f-message">What takes up your week?</label>
+            <textarea id="f-message" name="message" placeholder="Every morning someone phones five clients to remind them about refills..." required></textarea>
+          </div>
+          <div>
+            <button class="btn btn-go" id="f-send" type="submit">Send message</button>
+          </div>
+          <p class="form-note" id="form-status" role="status" aria-live="polite">I reply personally, usually within a day.</p>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span data-brand>crowdotcom</span></a>
+    <span>Loyalty programs, client apps and websites · Waterloo Region, Ontario</span>
+  </div>
+</footer>
+
+<script>
+  // [DECIDE] The business name. Change it here and it updates everywhere.
+  const BRAND = "crowdotcom";
+  document.querySelectorAll("[data-brand]").forEach(el => { el.textContent = BRAND; });
+  document.title = BRAND;
+
+  /* Hero demo ------------------------------------------------------------
+     A loyalty card and its points history. The history is append-only, the
+     way the real one is: Undo adds a correcting line rather than deleting,
+     so the balance is always the sum of the lines. Example data only. */
+  (function () {
+    const GOAL = 10;
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+    const stampsEl = document.getElementById("stamps");
+    const rowsEl = document.getElementById("rows");
+    const countEl = document.getElementById("count");
+    const rewardEl = document.getElementById("reward");
+    const awardBtn = document.getElementById("award");
+    const undoBtn = document.getElementById("undo");
+
+    // Example history, oldest first.
+    const ledger = [
+      { when: "Aug 12", what: "Visit", delta: 1 },
+      { when: "Aug 19", what: "Food refill", delta: 1 },
+      { when: "Aug 26", what: "Visit", delta: 1 },
+      { when: "Sep 02", what: "Visit", delta: 1 },
+      { when: "Sep 09", what: "Referral", delta: 2 },
+      { when: "Sep 16", what: "Visit", delta: 1 }
+    ];
+    let lastAward = null;
+
+    const balance = () => ledger.reduce((sum, row) => sum + row.delta, 0);
+    const now = () => new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, m => m.trim().toLowerCase());
+
+    function renderStamps(popIndex) {
+      const n = Math.min(balance(), GOAL);
+      stampsEl.innerHTML = "";
+      for (let i = 0; i < GOAL; i++) {
+        const li = document.createElement("li");
+        if (i < n) { li.className = "on"; li.innerHTML = CHECK; }
+        else { li.textContent = i === GOAL - 1 ? "free" : String(i + 1); }
+        if (i === popIndex) li.classList.add("pop");
+        stampsEl.appendChild(li);
+      }
+      stampsEl.setAttribute("aria-label", "Visit card, " + n + " of " + GOAL + " stamped");
+      countEl.textContent = n;
+
+      const left = GOAL - n;
+      if (left <= 0) {
+        rewardEl.className = "reward ready";
+        rewardEl.innerHTML = "<span>Reward ready to redeem</span><b>10 / 10</b>";
+        awardBtn.textContent = "Redeem reward";
+      } else {
+        rewardEl.className = "reward";
+        rewardEl.innerHTML = "<span>Reward at 10 visits</span><b>" + left + " to go</b>";
+        awardBtn.textContent = "Award a visit";
+      }
+    }
+
+    function renderRows(fresh) {
+      rowsEl.innerHTML = "";
+      let running = 0;
+      const withBalance = ledger.map(row => ({ ...row, bal: (running += row.delta) }));
+      withBalance.slice(-6).reverse().forEach((row, i) => {
+        const li = document.createElement("li");
+        if (fresh && i === 0) li.className = "new";
+        const sign = row.delta > 0 ? "+" + row.delta : "−" + Math.abs(row.delta);
+        li.innerHTML =
+          '<span class="when"></span><span class="what"></span>' +
+          '<span class="delta ' + (row.delta > 0 ? "plus" : "minus") + '">' + sign + '</span>' +
+          '<span class="bal">' + row.bal + '</span>';
+        li.querySelector(".when").textContent = row.when;
+        li.querySelector(".what").textContent = row.what;
+        rowsEl.appendChild(li);
+      });
+    }
+
+    awardBtn.addEventListener("click", () => {
+      const before = balance();
+      if (before >= GOAL) {
+        ledger.push({ when: now(), what: "Reward redeemed", delta: -GOAL });
+        lastAward = null;
+        undoBtn.disabled = true;
+        renderStamps(-1);
+      } else {
+        lastAward = { when: now(), what: "Visit", delta: 1 };
+        ledger.push(lastAward);
+        undoBtn.disabled = false;
+        renderStamps(before);
+      }
+      renderRows(true);
+    });
+
+    undoBtn.addEventListener("click", () => {
+      if (!lastAward) return;
+      ledger.push({ when: now(), what: "Undo, correction", delta: -1 });
+      lastAward = null;
+      undoBtn.disabled = true;
+      renderStamps(-1);
+      renderRows(true);
+    });
+
+    renderStamps(-1);
+    renderRows(false);
+  })();
+
+  /* Contact form ----------------------------------------------------------
+     Posts to Formspree, which forwards to Chris's email, so the address never
+     appears in this page. Until a real form ID is set, the form says so and
+     cannot be sent, so nobody writes a message that goes nowhere. */
+  (function () {
+    const form = document.getElementById("contact-form");
+    const send = document.getElementById("f-send");
+    const status = document.getElementById("form-status");
+    const connected = !form.action.includes("YOUR_FORM_ID");
+
+    if (!connected) {
+      document.getElementById("form-off").hidden = false;
+      send.disabled = true;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!connected) return;
+
+      send.disabled = true;
+      send.textContent = "Sending";
+      status.className = "form-note";
+      status.textContent = "";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" }
+        });
+        if (!response.ok) throw new Error("status " + response.status);
+
+        const done = document.createElement("div");
+        done.className = "form-done";
+        done.setAttribute("role", "status");
+        done.innerHTML = "<strong>Message sent.</strong> Thanks, I'll reply to the email you gave.";
+        form.replaceWith(done);
+      } catch (error) {
+        send.disabled = false;
+        send.textContent = "Send message";
+        status.className = "form-error";
+        status.textContent = "That did not go through. Check your connection and try again. What you wrote is still here.";
+      }
+    });
+  })();
+</script>
+</body>
+</html>
