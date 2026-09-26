@@ -47,12 +47,10 @@ Working title for the role: **Loyalty Operations & Digital Product Specialist.**
 
 ## 3. The proof: three projects
 
-Real work, described honestly. **No client is named, and no screenshots are
-shown.** Describe each project in words only. Do not include details that would
-identify a client, such as a town, a street, a staff member's name, or a
-software vendor's product name.
+Real work, described honestly. Clients may be named (Chris lifted the earlier
+no-names rule). Recordings of the real apps, made with sample data, are allowed.
 
-### A veterinary clinic in Ontario
+### Nith Valley Animal Hospital, New Hamburg, Ontario
 
 A client app and a front-desk console, built to sit alongside the clinic's
 existing practice software rather than replace it.
@@ -69,7 +67,7 @@ existing practice software rather than replace it.
 - When the clinic's staff asked for changes, each one was built.
 
 **Status to state:** built and working, not yet a signed client. Do not imply
-otherwise. Describe it as "built for a veterinary clinic", never "used by".
+otherwise. Say "built for", never "used by".
 
 ### A personal trainer
 
@@ -218,7 +216,7 @@ Then show both to one or two people without saying which is which.
 
 Settled:
 
-- **Clients:** never named, no screenshots.
+- **Clients:** may be named. Recordings of the apps use sample data only.
 - **Contact:** a form that sends to Chris's email (section 5).
 - **Price:** "Every project is quoted for the business." No figures.
 
