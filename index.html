@@ -383,6 +383,9 @@
   .case h3 { font-size: clamp(1.4rem, 1.15rem + 1vw, 1.85rem); font-weight: 720; font-stretch: 108%; letter-spacing: -.025em; line-height: 1.12; }
   .case-sum { color: var(--soft); }
 
+  .try { display: flex; flex-direction: column; gap: .65rem; margin-top: .4rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .try-links { display: flex; flex-wrap: wrap; gap: .5rem; }
+
   .facts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .7rem; }
   .facts li { display: grid; grid-template-columns: .9rem minmax(0, 1fr); gap: .7rem; font-size: .98rem; }
   .facts li::before { content: ""; width: 7px; height: 7px; margin-top: .6em; border-radius: 2px; background: var(--teal); }
@@ -709,6 +712,13 @@
               <li>The app tells clients before food or a prescription runs out.</li>
               <li>It never calculates a vaccination due date. It only repeats what staff entered, so it cannot tell someone their dog is due when it is not.</li>
             </ul>
+            <div class="try">
+              <p class="path">Try the live demo, <b>sample data</b></p>
+              <div class="try-links">
+                <a class="btn btn-go btn-small" href="https://crowdotwave.github.io/nith-valley-app/?demo=client#/" target="_blank" rel="noopener">As a pet owner <span aria-hidden="true">&#8599;</span></a>
+                <a class="btn btn-line btn-small" href="https://crowdotwave.github.io/nith-valley-app/?demo=staff#/" target="_blank" rel="noopener">As the front desk <span aria-hidden="true">&#8599;</span></a>
+              </div>
+            </div>
           </div>
           <div class="flow has-demo">
             <figure class="phone">
