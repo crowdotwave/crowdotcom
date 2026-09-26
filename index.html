@@ -402,6 +402,28 @@
 
   .flow-caption { font: 400 .68rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); }
 
+  /* A case with a real recording: the phone sits beside the drawn flow. */
+  .flow.has-demo { display: grid; grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr); gap: 1.5rem clamp(1.25rem, 3vw, 2rem); align-items: center; }
+  .flow.has-demo .flow-steps { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
+  @media (max-width: 34rem) { .flow.has-demo { grid-template-columns: 1fr; justify-items: center; } .flow.has-demo .flow-steps { justify-self: stretch; } }
+
+  .phone { margin: 0; display: flex; flex-direction: column; gap: .6rem; width: 100%; max-width: 13.5rem; }
+  .phone-frame {
+    position: relative;
+    aspect-ratio: 540 / 1168;
+    max-width: 100%;
+    border-radius: 1.6rem;
+    padding: .4rem;
+    background: linear-gradient(160deg, #262b3a, #0c0e15);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .03) inset;
+  }
+  .phone-frame video, .phone-frame img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    border-radius: 1.25rem; background: #000;
+  }
+  .phone figcaption { font: 400 .64rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); text-align: center; }
+
   .track { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
   .track li {
     position: relative;
@@ -714,15 +736,27 @@
               <li>Each client sees only their own data. That rule is enforced by the database, not just hidden on the screen.</li>
             </ul>
           </div>
-          <div class="flow" aria-label="How a set is saved with no signal">
-            <p class="flow-caption">A set logged in a basement gym</p>
-            <ol class="track">
-              <li class="done"><span>Logged on the phone, no signal</span><span class="who">client</span></li>
-              <li class="done"><span>Saved on the phone first</span><span class="who">offline</span></li>
-              <li class="now"><span>Signal back, sent automatically</span><span class="who">sync</span></li>
-              <li><span>On the trainer's progress charts</span><span class="who">trainer</span></li>
-            </ol>
-            <p class="flow-caption">Nothing is lost when the gym has no reception.</p>
+          <div class="flow has-demo">
+            <figure class="phone">
+              <div class="phone-frame">
+                <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/ptc-demo-poster.jpg"
+                       aria-label="Recording of the workout app: a client picks the day's workout, logs two bench press sets, sets a personal record, then opens their progress charts.">
+                  <source src="assets/work/ptc-demo.mp4" type="video/mp4">
+                  <source src="assets/work/ptc-demo.webm" type="video/webm">
+                </video>
+              </div>
+              <figcaption>The real app, recorded with sample data</figcaption>
+            </figure>
+            <div class="flow-steps" aria-label="How a set is saved with no signal">
+              <p class="flow-caption">A set logged in a basement gym</p>
+              <ol class="track">
+                <li class="done"><span>Logged on the phone, no signal</span><span class="who">client</span></li>
+                <li class="done"><span>Saved on the phone first</span><span class="who">offline</span></li>
+                <li class="now"><span>Signal back, sent automatically</span><span class="who">sync</span></li>
+                <li><span>On the trainer's progress charts</span><span class="who">trainer</span></li>
+              </ol>
+              <p class="flow-caption">Nothing is lost when the gym has no reception.</p>
+            </div>
           </div>
         </article>
 
@@ -1021,6 +1055,22 @@
 
     renderStamps(-1);
     renderRows(false);
+  })();
+
+  /* App recordings ------------------------------------------------------
+     Muted, looping, and only playing while on screen. With reduced motion
+     the poster frame stays as a still, and nothing loads until needed. */
+  (function () {
+    const videos = document.querySelectorAll(".demo-video");
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!videos.length || still.matches || !("IntersectionObserver" in window)) return;
+    const seen = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        if (isIntersecting) { target.preload = "auto"; target.play().catch(() => {}); }
+        else target.pause();
+      });
+    }, { threshold: 0.35 });
+    videos.forEach(v => seen.observe(v));
   })();
 
   /* Contact form ----------------------------------------------------------
