@@ -11,12 +11,13 @@ before the page goes live. A build uses the placeholder shown in the meantime.
 
 ## 1. Who this is for
 
-**The visitor is a small business owner or manager**, most likely in
-Waterloo Region or nearby Ontario. A vet clinic, a personal trainer, a salon, a
+**The visitor is a small business owner or manager** anywhere in Canada. Chris
+works remotely across Canada and locally in Edmonton and St. Albert, Alberta. A vet clinic, a personal trainer, a salon, a
 maker, a local shop. They are busy, not technical, and have been sold software
 before that did not fit them.
 
-They arrive from a link Chris sent, a business card, or a referral. **Most will
+They arrive from a search, an online post or ad, or a referral. Chris works
+online-first, so the site has to do the introducing on its own. **Most will
 open it on a phone.** They give it five to ten seconds before deciding whether
 this person is serious.
 
@@ -139,7 +140,8 @@ One line, placed near the contact section. No figures, no tiers.
 
 **About**
 
-> I'm Chris, based in Waterloo Region, Ontario.
+> I'm Chris. I work with small businesses across Canada, and locally in Edmonton
+> and St. Albert.
 
 `[DECIDE]` Chris will write the rest later. Leave a clearly marked placeholder
 for two or three sentences, and design the section so it looks finished with
