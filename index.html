@@ -191,6 +191,19 @@
   .client[data-state="absent"] .fringe { opacity: .1; stroke-dasharray: 1 16; }
   .client[data-state="absent"] .body { opacity: .2; }
   @keyframes form { to { stroke-dashoffset: -28; } }
+
+  /* The thread: one client edge drawn the length of the page. It runs down the gutter beside
+     each section and swings out across the gap before the next heading, drawing itself as the
+     page scrolls so its head stays a little ahead of the reader, still forming. It sits under
+     the content (main is lifted above it) and never crosses text, only gutters and gaps.
+     Reduced motion gets the whole line, drawn and still. */
+  main { position: relative; z-index: 1; }
+  .thread { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; overflow: visible; }
+  .thread path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .thread .body { stroke: rgba(232, 236, 242, .08); stroke-width: 8; }
+  .thread .fringe { stroke-width: 1.6; }
+  .thread .forming { stroke-width: 1.6; opacity: .7; stroke-dasharray: 2 5; animation: form 2.4s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .thread .forming { display: none; } }
   .client-state { display: flex; flex-direction: column; align-items: flex-end; gap: .45rem; text-align: right; }
   @media (max-width: 44rem) { .client-state { grid-column: 2; grid-row: 1; } }
   .client-state .word { font-size: .92rem; color: var(--mist); }
@@ -346,6 +359,23 @@
     </nav>
   </div>
 </header>
+
+<svg class="thread" id="thread" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- The spectrum again, but running down the page and repeating, so the fringe turns through
+         mint, ice, violet and rose as it is followed. -->
+    <linearGradient id="thread-spectrum" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1800" spreadMethod="repeat">
+      <stop offset="0" stop-color="#8eeecf"/>
+      <stop offset=".3" stop-color="#86c6ff"/>
+      <stop offset=".55" stop-color="#b8a4ff"/>
+      <stop offset=".8" stop-color="#f3a8c8"/>
+      <stop offset="1" stop-color="#8eeecf"/>
+    </linearGradient>
+  </defs>
+  <path class="body"/>
+  <path class="fringe" stroke="url(#thread-spectrum)" transform="translate(-2 -2)"/>
+  <path class="forming" stroke="url(#thread-spectrum)" transform="translate(-2 -2)"/>
+</svg>
 
 <main id="top">
 
@@ -743,6 +773,109 @@
         status.textContent = "That did not go through. Check your connection and try again. What you wrote is still here.";
       }
     });
+  })();
+
+  /* The thread. Built from the page's own layout, so it follows the sections wherever they fall:
+     down the gutter beside each one, and out across the gap in a wide curve that lands just
+     before the next heading. Scrolling draws it, with its head kept two thirds of the way down
+     the screen and a short forming stretch ahead of it. */
+  (function () {
+    const svg = document.getElementById("thread");
+    const bands = [...document.querySelectorAll("main > .band")];
+    if (!svg || !bands.length || !svg.getBBox) return;
+    const [body, fringe, forming] = svg.querySelectorAll("path");
+    const AHEAD = 170, STEP = 6;
+    let pts = [], total = 0;
+
+    const abs = (el) => el.getBoundingClientRect().top + window.scrollY;
+    const pad = (el, side) => parseFloat(getComputedStyle(el)["padding" + side]) || 0;
+
+    function build() {
+      const doc = document.documentElement;
+      const W = doc.clientWidth;
+      const H = document.querySelector("footer") ? abs(document.querySelector("footer")) : doc.scrollHeight;
+      const lead = bands[0].querySelector("h2");
+      const gx = Math.max(7, Math.round((lead ? lead.getBoundingClientRect().left : 32) / 2));
+      const amp = Math.min(5, gx * 0.3);
+      // Sections alternate sides: left gutter, then right, then left. Both gutters are empty at
+      // every width, because the wrap pads both sides alike.
+      const side = (i) => (i % 2 ? W - gx : gx);
+      const f = (n) => Math.round(n * 10) / 10;
+      const cross = (x0, y0, x1, y1) => { const k = (y1 - y0) * 0.6; return ` C${f(x0)} ${f(y0 + k)} ${f(x1)} ${f(y1 - k)} ${f(x1)} ${f(y1)}`; };
+      let d = "";
+
+      // Out of the hero: from under the lit cloud on the right, across to the first gutter.
+      const start = abs(bands[0]) + 2, firstHead = abs(bands[0]) + pad(bands[0], "Top") - 28;
+      d += `M${f(W * 0.8)} ${f(start)}` + cross(W * 0.8, start, side(0), firstHead);
+
+      bands.forEach((band, i) => {
+        const x = side(i);
+        const top = abs(band) + pad(band, "Top") - 28;
+        const end = abs(band) + band.offsetHeight - pad(band, "Bottom") + 28;
+        // Down the gutter, a gentle waver rather than a ruled line.
+        const n = Math.max(1, Math.round((end - top) / 240)), step = (end - top) / n;
+        for (let s = 0; s < n; s++) {
+          const y0 = top + s * step;
+          d += ` C${f(x + amp)} ${f(y0 + step / 3)} ${f(x - amp)} ${f(y0 + step * 2 / 3)} ${f(x)} ${f(y0 + step)}`;
+        }
+        const next = bands[i + 1];
+        // Across the gap in one S, landing just above the next heading on the other side.
+        if (next) d += cross(x, end, side(i + 1), abs(next) + pad(next, "Top") - 28);
+      });
+
+      svg.setAttribute("width", W);
+      svg.setAttribute("height", H);
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      [body, fringe].forEach((p) => p.setAttribute("d", d));
+
+      total = body.getTotalLength();
+      pts = [];
+      for (let l = 0; l <= total; l += STEP) { const p = body.getPointAtLength(l); pts.push([p.x, p.y, l]); }
+      const last = body.getPointAtLength(total); pts.push([last.x, last.y, total]);
+      [body, fringe].forEach((p) => { p.style.strokeDasharray = `${total} ${total}`; });
+      draw();
+    }
+
+    // The drawn length whose point sits at a given height on the page. The path only ever goes
+    // down, so a binary search over the samples finds it.
+    function lengthAt(y) {
+      let lo = 0, hi = pts.length - 1;
+      if (y <= pts[0][1]) return 0;
+      if (y >= pts[hi][1]) return total;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (pts[m][1] < y) lo = m; else hi = m; }
+      const [, y0, l0] = pts[lo], [, y1, l1] = pts[hi];
+      return l0 + (l1 - l0) * ((y - y0) / Math.max(1e-6, y1 - y0));
+    }
+
+    function draw() {
+      if (!pts.length) return;
+      let len = total;
+      if (!still) {
+        const doc = document.documentElement;
+        const max = Math.max(1, doc.scrollHeight - window.innerHeight);
+        const t = Math.min(1, window.scrollY / max);
+        // Two thirds down the screen, easing to the very end as the page runs out.
+        const y = window.scrollY + window.innerHeight * (0.66 + 0.34 * t * t);
+        len = t >= 0.999 ? total : lengthAt(y);
+      }
+      const off = String(total - len);
+      body.style.strokeDashoffset = off;
+      fringe.style.strokeDashoffset = off;
+      // The forming stretch: the next few steps of the same path, dashed and moving.
+      if (still || len >= total) { forming.setAttribute("d", ""); return; }
+      const a = Math.floor(len / STEP), b = Math.min(pts.length - 1, Math.ceil((len + AHEAD) / STEP));
+      let fd = "";
+      for (let i = a; i <= b; i++) fd += (i === a ? "M" : " L") + pts[i][0].toFixed(1) + " " + pts[i][1].toFixed(1);
+      forming.setAttribute("d", fd);
+    }
+
+    const schedule = (fn) => { let queued = 0; return () => { if (!queued) queued = requestAnimationFrame(() => { queued = 0; fn(); }); }; };
+    const rebuild = schedule(build);
+    build();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(rebuild);
+    if ("ResizeObserver" in window) new ResizeObserver(rebuild).observe(document.querySelector("main"));
+    else addEventListener("resize", rebuild);
+    if (!still) addEventListener("scroll", schedule(draw), { passive: true });
   })();
 </script>
 </body>

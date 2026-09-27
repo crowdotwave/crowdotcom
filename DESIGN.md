@@ -151,6 +151,9 @@ Fixed header, transparent over the sky, gaining a night background and hairline 
 ### Who is drifting (signature)
 Four invented sample clients, each an SVG edge: a 10px silver body under a 2px spectrum fringe. States are `vivid`, `forming` (animated dash), `dispersing` and `absent` (sparse dashes, faded body). "Send a note" moves a client to forming and updates a live status line.
 
+### The thread
+One client edge drawn the length of the page, built from the page's own layout. It leaves the hero from under the lit cloud, runs down a gutter beside each section, and crosses each gap in a single S to the opposite gutter, landing just above the next heading. Scrolling draws it: its head stays two thirds of the way down the screen, with a short forming stretch (the animated dash) ahead of it. It sits under the content and only ever occupies gutters and gaps. The fringe's spectrum repeats down the page, so its colour turns as it is followed. Under reduced motion the whole line is drawn and still.
+
 ### Observation panel
 A sample client's points history that prints one new line every few seconds on top of already visible content. Labelled as sample data.
 
