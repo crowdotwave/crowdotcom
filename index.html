@@ -200,9 +200,9 @@
   main { position: relative; z-index: 1; }
   .thread { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; overflow: visible; }
   .thread path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-  .thread .body { stroke: rgba(232, 236, 242, .08); stroke-width: 8; }
-  .thread .fringe { stroke-width: 1.6; }
-  .thread .forming { stroke-width: 1.6; opacity: .7; stroke-dasharray: 2 5; animation: form 2.4s linear infinite; }
+  .thread .body { stroke: rgba(232, 236, 242, .15); stroke-width: 9; }
+  .thread .fringe { stroke-width: 2.4; }
+  .thread .forming { stroke-width: 2.4; opacity: .9; stroke-dasharray: 2 5; animation: form 2.4s linear infinite; }
   @media (prefers-reduced-motion: reduce) { .thread .forming { display: none; } }
   .client-state { display: flex; flex-direction: column; align-items: flex-end; gap: .45rem; text-align: right; }
   @media (max-width: 44rem) { .client-state { grid-column: 2; grid-row: 1; } }
@@ -609,8 +609,9 @@
   })();
 
   /* The sky ----------------------------------------------------------------
-     A noctilucent cloud edge rendered in WebGL: fractal noise shapes the
-     cloud, and a thin band at its edge takes the spectral colour. Drawn at a
+     A cloud at night rendered in WebGL: a cumulus bank of rounded billows,
+     dark against a pale patch of sky, lined along its top in silver that
+     turns iridescent, and hiding the stars behind it. Drawn at a
      capped resolution and frame rate, paused off screen and in a hidden tab,
      and drawn once as a still for reduced motion. Without WebGL the CSS
      night gradient behind it stands alone. */
@@ -622,11 +623,13 @@
     const vs = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
     const fs = `
       precision mediump float;
-      uniform vec2 res; uniform float t; uniform float portrait; uniform vec2 band;
+      // cloud: where the middle of the cloud's base sits (canvas pixels, y up) and how many pixels
+      // one unit of cloud is. One unit is roughly the height of a middling billow.
+      uniform vec2 res; uniform float t; uniform vec3 cloud;
       float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
       float n(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f*f*(3.0-2.0*f);
         return mix(mix(h(i), h(i+vec2(1,0)), u.x), mix(h(i+vec2(0,1)), h(i+vec2(1,1)), u.x), u.y); }
-      float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 6; i++){ v += a*n(p); p = p*2.03 + 17.1; a *= 0.5; } return v; }
+      float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++){ v += a*n(p); p = p*2.03 + 17.1; a *= 0.5; } return v; }
       vec3 spectrum(float x){
         vec3 mint = vec3(0.557,0.933,0.812), ice = vec3(0.525,0.776,1.0), violet = vec3(0.722,0.643,1.0), rose = vec3(0.953,0.659,0.784);
         x = fract(x) * 4.0;
@@ -635,29 +638,74 @@
         if (x < 3.0) return mix(violet, rose, x-2.0);
         return mix(rose, mint, x-3.0);
       }
+      float smin(float a, float b, float k){ float x = clamp(0.5 + 0.5*(b-a)/k, 0.0, 1.0); return mix(b, a, x) - k*x*(1.0-x); }
+      float lobe(vec2 c, float x, float y, float r, float d, float k){
+        r += 0.03 * sin(t * 0.16 + x * 1.7 + y * 2.3);
+        return smin(d, length(c - vec2(x, y)) - r, k);
+      }
+      // A cumulus: a row of billows on a flattish base, with a second tier of domes heaped on the
+      // middle, each kept distinct so the top reads as rounded heads with folds between them.
+      float shape(vec2 c){
+        float d = 9.0;
+        d = lobe(c, -2.6, 0.22, 0.40, d, 0.22); d = lobe(c, -1.9, 0.32, 0.58, d, 0.22);
+        d = lobe(c, -1.1, 0.38, 0.70, d, 0.22); d = lobe(c, -0.2, 0.42, 0.78, d, 0.22);
+        d = lobe(c, 0.7, 0.38, 0.70, d, 0.22); d = lobe(c, 1.5, 0.32, 0.58, d, 0.22);
+        d = lobe(c, 2.25, 0.25, 0.44, d, 0.22); d = lobe(c, 2.85, 0.18, 0.30, d, 0.22);
+        d = lobe(c, -1.45, 0.92, 0.44, d, 0.17); d = lobe(c, -0.6, 1.12, 0.52, d, 0.17);
+        d = lobe(c, 0.3, 1.02, 0.48, d, 0.17); d = lobe(c, 1.05, 0.86, 0.38, d, 0.17);
+        d = lobe(c, -0.15, 1.42, 0.3, d, 0.15);
+        return -smin(-d, c.y + 0.1 + 0.07 * sin(c.x * 1.9 + 0.6) + 0.035 * sin(c.x * 4.3), 0.36);
+      }
+      // Billows on the billows: the outline churns slowly, finer at the edge than in the mass.
+      float field(vec2 c, float d){
+        float m = mix(0.4, 1.0, smoothstep(0.0, 0.45, c.y));
+        return d + ((fbm(c * 1.9 + vec2(t * 0.025, t * 0.006)) - 0.5) * 0.24
+                 + (fbm(c * 5.5 + vec2(-t * 0.04, 0.0)) - 0.5) * 0.05) * m;
+      }
       void main(){
-        vec2 uv = gl_FragCoord.xy / res;
-        float aspect = res.x / res.y;
-        vec2 p = vec2(uv.x * aspect, uv.y);
-        // The cloud lives in a ribbon crossing the upper right (the top on a phone).
-        float along = portrait > 0.5 ? uv.x : uv.x - 0.25;
-        float center = portrait > 0.5 ? band.x - band.y*0.4*along : 0.62 + 0.42*along;
-        float ribbon = exp(-pow((uv.y - center) / (portrait > 0.5 ? band.y : 0.16), 2.0));
-        ribbon *= portrait > 0.5 ? 1.0 : smoothstep(0.18, 0.55, uv.x);
-        vec2 q = p * 2.2 + vec2(t * 0.012, -t * 0.004);
-        float warp = fbm(q * 0.8 + vec2(0.0, t * 0.01));
-        float d = fbm(q + 1.6 * warp) * ribbon;
-        float body = smoothstep(0.30, 0.62, d);
-        float edge = smoothstep(0.22, 0.30, d) * (1.0 - smoothstep(0.30, 0.40, d));
-        // The body is a dark silhouette that hides the stars behind it; only
-        // the edge carries light.
-        vec3 lit = edge * spectrum(d * 3.2 + uv.x * 0.7 + t * 0.01) * 0.95;
-        lit += step(0.9985, h(floor(gl_FragCoord.xy / 2.0))) * (1.0 - ribbon) * 0.55;
-        float la = clamp(max(max(lit.r, lit.g), lit.b), 0.0, 1.0);
-        float ba = body * 0.88;
-        vec3 shade = vec3(0.016, 0.024, 0.055) + spectrum(d * 2.0 + t * 0.01) * 0.035 * (1.0 - body);
+        vec2 px = gl_FragCoord.xy;
+        vec2 c = (px - cloud.xy) / cloud.z;
+        float aa = 1.2 / cloud.z;
+
+        // The sky behind: a pale patch just above and behind the cloud, as if the light lining it
+        // sits there, so the dark mass reads as a silhouette. And stars, which the cloud hides.
+        vec2 g = (c - vec2(0.2, 1.25)) / vec2(4.2, 2.1);
+        float glow = exp(-dot(g, g)) * 0.95;
+        vec3 light = vec3(0.07, 0.10, 0.20) * glow;
+        vec2 cell = floor(px / 2.0);
+        float s = h(cell);
+        float star = step(0.9965, s) * (0.35 + 0.65 * h(cell + 3.1)) * (0.8 + 0.2 * sin(t * 1.3 + s * 60.0));
+
+        float d0 = shape(c);
+        float cover = 0.0;
+        vec3 body = vec3(0.0);
+        if (d0 < 0.75) {
+          float d = field(c, d0);
+          float up = field(c + vec2(0.0, 0.07), shape(c + vec2(0.0, 0.07)));
+          // Positive where the outline faces up, toward the light.
+          float facing = smoothstep(-0.1, 0.8, (up - d) / 0.07);
+          cover = smoothstep(aa, -aa, d);
+          vec3 iri = spectrum(c.x * 0.22 + d * 1.6 + t * 0.012);
+
+          // The mass: dark, with the upper side of every billow catching a little light and the
+          // folds between them left in shadow, so it has volume rather than reading as a hole.
+          float depth = clamp(-d / 0.55, 0.0, 1.0);
+          float bill = fbm(c * 2.6 + vec2(t * 0.02, 1.7));
+          float shade = 0.2 + 0.5 * facing * (1.0 - 0.75 * depth) + (bill - 0.42) * 0.35 + c.y * 0.07;
+          body = mix(vec3(0.016, 0.022, 0.048), vec3(0.10, 0.115, 0.19), clamp(shade, 0.0, 1.0));
+          // Light soaking into the thin edge from above.
+          body += iri * exp(min(d, 0.0) / 0.1) * 0.18 * facing;
+
+          // The silver lining: bright and iridescent where the edge faces up, a thread below.
+          float rim = exp(-abs(d) / 0.035) + 0.45 * exp(-abs(d) / 0.1);
+          light += mix(vec3(0.91, 0.93, 0.95), iri, 0.72) * rim * (0.12 + 0.95 * facing) * 0.85;
+        }
+        light += vec3(star) * (1.0 - cover);
+
+        float la = clamp(max(max(light.r, light.g), light.b), 0.0, 1.0);
+        float ba = cover * 0.94;
         float alpha = la + ba * (1.0 - la);
-        vec3 col = (lit + shade * ba * (1.0 - la)) / max(alpha, 0.001);
+        vec3 col = (light + body * ba * (1.0 - la)) / max(alpha, 0.001);
         gl_FragColor = vec4(col, alpha);
       }`;
 
@@ -670,19 +718,30 @@
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t"), uPortrait = gl.getUniformLocation(prog, "portrait"), uBand = gl.getUniformLocation(prog, "band");
+    const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t"), uCloud = gl.getUniformLocation(prog, "cloud");
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const scale = Math.min(window.devicePixelRatio || 1, 1.25) * 0.75;
+    const heading = document.getElementById("hero-title");
     function size() {
       const w = Math.round(canvas.clientWidth * scale), hgt = Math.round(canvas.clientHeight * scale);
       if (canvas.width !== w || canvas.height !== hgt) { canvas.width = w; canvas.height = hgt; gl.viewport(0, 0, w, hgt); }
       gl.uniform2f(uRes, w, hgt);
-      gl.uniform1f(uPortrait, canvas.clientWidth < canvas.clientHeight * 1.1 ? 1 : 0);
-      // On a phone the copy fills most of the hero, so the cloud keeps to the
-      // clear strip above the headline (measured in pixels, not a fraction).
-      const clear = Math.max(canvas.clientHeight, 1);
-      gl.uniform2f(uBand, 1 - 150 / clear, 60 / clear);
+      // The cloud takes the clear sky above the headline, whatever the layout: over the right
+      // column on a wide screen, and as a bank across the top on a phone. Measured in CSS
+      // pixels from the top of the sky, then turned into canvas pixels with y running up.
+      const cw = Math.max(canvas.clientWidth, 1), ch = Math.max(canvas.clientHeight, 1), k = w / cw;
+      const top = canvas.getBoundingClientRect().top;
+      const headTop = heading ? heading.getBoundingClientRect().top - top : ch * 0.35;
+      const wide = cw >= 960;
+      const floor = Math.max(120, headTop - (wide ? 34 : 18));
+      const ceiling = wide ? 92 : 84;
+      // Tall enough to fill the clear sky, but never wider than the screen: a whole cloud reads
+      // as a cloud, a cropped bank reads as a stripe. Whatever height is left over goes evenly
+      // above and below it.
+      const unit = Math.max(28, Math.min((floor - ceiling) / 1.72, cw * 0.92 / 6));
+      const base = floor - Math.max(0, (floor - ceiling - unit * 1.72) / 2);
+      gl.uniform3f(uCloud, cw * (wide ? 0.69 : 0.5) * k, (ch - base) * k, unit * k);
     }
     const start = performance.now();
     function draw(now) {
@@ -692,7 +751,14 @@
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
 
-    if (still) { draw(start); addEventListener("resize", () => draw(performance.now())); return; }
+    // The still is drawn once, so it has to be drawn again once the type has loaded: the cloud
+    // is placed from the headline, and the headline moves when its font arrives.
+    if (still) {
+      const once = () => draw(performance.now());
+      once(); addEventListener("resize", once); addEventListener("load", once);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(once);
+      return;
+    }
     let visible = true, last = 0, raf = 0;
     const loop = (now) => { raf = requestAnimationFrame(loop); if (!visible || document.hidden || now - last < 33) return; last = now; draw(now); };
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);

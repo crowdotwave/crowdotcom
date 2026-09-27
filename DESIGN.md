@@ -85,7 +85,7 @@ The page is a clear Alberta night with one iridescent cloud in it. Loyalty is dr
 The ground is night blue, the text is silver, and colour appears only where light would: at an edge. There are no cards, no kickers, no glows. Rows are separated by hairlines, the type is one humanist sans at hairline weight for display, and violet is kept for the single action a visitor is asked to take.
 
 **Key Characteristics:**
-- One WebGL cloud in the hero, a dark silhouette that hides the stars, lit only at its edge, capped at 30fps, paused offscreen, a still frame under reduced motion.
+- One WebGL cloud in the hero: a cumulus of rounded billows placed in the clear sky above the headline, a dark silhouette against a pale patch of sky that hides the stars, lined in silver that turns iridescent along its top, its billows faintly shaded so it has volume. Capped at 30fps, paused offscreen, a still frame under reduced motion.
 - The spectrum (mint, ice, violet, rose) appears only as a fringe: the cloud edge, the client edges, the logo mark, the phone frame's hairline.
 - Hairline-ruled rows instead of containers.
 - Hairline display type (weight 200) against a comfortable 400 body.
