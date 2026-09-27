@@ -5,961 +5,547 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>crowdotcom</title>
 <meta name="description" content="Loyalty programs, client apps and websites for small businesses across Canada, built and run by one person in Edmonton and St. Albert, Alberta.">
-<meta name="theme-color" content="#07080d">
+<meta name="theme-color" content="#070b16">
 <style>
-  /* Fonts are hosted in this repo (assets/fonts, SIL Open Font License) so the
-     page never waits on a third party. Latin subset only. */
   @font-face {
-    font-family: "Mona Sans";
-    src: url("assets/fonts/monasans-latin.woff2") format("woff2");
-    font-weight: 200 900;
-    font-stretch: 75% 125%;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Martian Mono";
-    src: url("assets/fonts/martianmono-latin.woff2") format("woff2");
-    font-weight: 300 600;
-    font-stretch: 75% 112.5%;
+    font-family: "Commissioner";
+    src: url("assets/fonts/commissioner-latin.woff2") format("woff2");
+    font-weight: 100 900;
     font-display: swap;
   }
 
-  /* One dark world, on purpose. Three accents, and each one has a single job:
-       teal     it works, act here (buttons, live and done states)
-       purple   loyalty (stamps, points)
-       magenta  needs attention (a reward waiting, a drifting client,
-                an unfinished [DECIDE] placeholder)
-     Nothing else on the page is coloured. */
+  /* A noctilucent summer night. The ground is the sky after sunset, the text
+     is the cloud's silver body, and colour lives only at hairline edges.
+     Violet is reserved: it marks the active band and the one action. */
   :root {
-    --void: #07080d;
-    --base: #0b0d14;
-    --panel: #10131c;
-    --panel-2: #161a25;
-    --line: #232938;
-    --line-soft: #191e2a;
-    --text: #eceef4;
-    --soft: #a4abba;
-    --dim: #6e7689;
+    --night: #070b16;
+    --night-2: #0b1222;
+    --dusk: #13203a;
+    --silver: #e8ecf2;
+    --mist: #a8b2c3;
+    --faint: #7f8a9e;
+    --rule: rgba(232, 236, 242, .12);
+    --rule-strong: rgba(232, 236, 242, .24);
 
-    --teal: #2de2c4;
-    --teal-ink: #03211c;
-    --teal-glow: rgba(45, 226, 196, .16);
-    --purple: #9b7bff;
-    --purple-soft: rgba(155, 123, 255, .14);
-    --purple-glow: rgba(155, 123, 255, .22);
-    --magenta: #ff4fae;
-    --magenta-soft: rgba(255, 79, 174, .12);
+    --mint: #8eeecf;
+    --ice: #86c6ff;
+    --rose: #f3a8c8;
+    --violet: #b8a4ff;
+    --violet-deep: #2a1f55;
+    --edge: linear-gradient(90deg, var(--mint), var(--ice) 35%, var(--violet) 65%, var(--rose));
 
-    --sans: "Mona Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-
-    --wide: 76rem;
-    --gutter: clamp(1rem, 4vw, 2.5rem);
-    --radius: 14px;
+    --sans: "Commissioner", "Segoe UI", system-ui, sans-serif;
+    --wide: 78rem;
+    --gutter: clamp(1rem, 4.5vw, 3rem);
     color-scheme: dark;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; background: var(--void); }
+  html { background: var(--night); scroll-behavior: smooth; scrollbar-color: #2b3550 var(--night); }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-
   body {
     margin: 0;
-    background: var(--void);
-    color: var(--text);
-    font: 400 1.0625rem/1.6 var(--sans);
+    background: var(--night);
+    color: var(--silver);
+    font: 400 1.0625rem/1.65 var(--sans);
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    caret-color: var(--violet);
+    font-variant-numeric: tabular-nums;
   }
-
-  a { color: var(--teal); text-underline-offset: .2em; }
-  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
-  ::selection { background: var(--purple); color: var(--void); }
-
-  .wrap { max-width: var(--wide); margin-inline: auto; padding-inline: var(--gutter); }
-
-  h1, h2, h3 { margin: 0; font-family: var(--sans); text-wrap: balance; }
+  ::selection { background: var(--violet); color: var(--night); }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--night); }
+  ::-webkit-scrollbar-thumb { background: #2b3550; border-radius: 10px; border: 2px solid var(--night); }
+  a { color: var(--silver); text-decoration-color: rgba(184, 164, 255, .55); text-underline-offset: .22em; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-color: var(--violet); }
+  :focus-visible { outline: 1.5px solid var(--violet); outline-offset: 4px; border-radius: 3px; }
+  h1, h2, h3 { margin: 0; font-weight: 250; letter-spacing: -.02em; text-wrap: balance; }
   p { margin: 0; }
+  .wrap { max-width: var(--wide); margin-inline: auto; padding-inline: var(--gutter); }
+  .sample { font-size: .78rem; color: var(--faint); letter-spacing: .02em; }
 
-  /* Section labels read as the anchor each section lives at, which is true:
-     they are the page's own addresses, not decorative numbering. */
-  .path {
-    font: 400 .72rem/1.2 var(--mono);
-    font-stretch: 87.5%;
-    letter-spacing: .04em;
-    color: var(--dim);
-  }
-  .path b { color: var(--teal); font-weight: 400; }
+  /* Controls ------------------------------------------------------------- */
 
-  .tag {
-    display: inline-flex; align-items: center; gap: .45rem;
-    font: 400 .68rem/1 var(--mono);
-    font-stretch: 87.5%;
-    letter-spacing: .03em;
-    color: var(--soft);
-    border: 1px solid var(--line);
+  .act {
+    display: inline-flex; align-items: center; gap: .6rem;
+    min-height: 3rem; padding: .7rem 1.35rem;
+    font: 500 1rem/1 var(--sans);
+    color: var(--silver); text-decoration: none;
     border-radius: 999px;
-    padding: .42rem .7rem;
-    white-space: nowrap;
+    border: 1px solid var(--rule-strong);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color .3s cubic-bezier(.16, 1, .3, 1), background-color .3s cubic-bezier(.16, 1, .3, 1), color .3s;
   }
-  .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--dim); }
-  .tag.live::before { background: var(--teal); box-shadow: 0 0 10px var(--teal); }
-  .tag.wait::before { background: var(--magenta); box-shadow: 0 0 10px var(--magenta); }
+  .act svg { width: 1.05rem; height: 1.05rem; flex: none; }
+  .act:hover { border-color: var(--silver); }
+  /* The one action. Its edge is the only place violet lives in a control. */
+  .act.primary { border-color: var(--violet); background: rgba(184, 164, 255, .08); }
+  .act.primary:hover { background: rgba(184, 164, 255, .18); }
+  .act[disabled] { opacity: .45; cursor: not-allowed; }
+  .act.small { min-height: 2.5rem; padding: .5rem 1rem; font-size: .92rem; }
 
   /* Header --------------------------------------------------------------- */
 
   .top {
-    position: sticky;
-    top: env(safe-area-inset-top, 0px);
-    z-index: 20;
-    background: rgba(7, 8, 13, .78);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid var(--line-soft);
+    position: fixed; inset: 0 0 auto 0; z-index: 30;
+    padding-top: env(safe-area-inset-top, 0px);
+    transition: background-color .4s, border-color .4s;
+    border-bottom: 1px solid transparent;
   }
-  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .8rem; }
+  .top.scrolled { background: rgba(7, 11, 22, .82); border-color: var(--rule); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.25rem; }
+  .brand { display: inline-flex; align-items: center; gap: .6rem; font-weight: 500; font-size: 1.05rem; letter-spacing: .01em; text-decoration: none; }
+  .brand svg { width: 1.6rem; height: 1rem; }
+  .nav { display: flex; align-items: center; gap: 1.75rem; }
+  .nav a:not(.act) { font-size: .95rem; color: var(--mist); text-decoration: none; }
+  .nav a:not(.act):hover { color: var(--silver); }
+  @media (max-width: 48rem) { .nav a:not(.act) { display: none; } }
 
-  .brand {
-    display: inline-flex; align-items: center; gap: .55rem;
-    font-weight: 750; font-stretch: 118%; font-size: 1.1rem; letter-spacing: -.01em;
-    color: var(--text); text-decoration: none;
-  }
-  .brand-mark {
-    width: 11px; height: 11px; border-radius: 3px;
-    background: var(--teal);
-    box-shadow: 0 0 14px var(--teal-glow), 0 0 2px var(--teal);
-  }
+  /* Sky ------------------------------------------------------------------- */
 
-  .nav { display: flex; align-items: center; gap: 1.6rem; }
-  .nav a:not(.btn) { color: var(--soft); text-decoration: none; font-size: .92rem; }
-  .nav a:not(.btn):hover { color: var(--text); }
-  @media (max-width: 46rem) { .nav a:not(.btn) { display: none; } }
-
-  /* Buttons -------------------------------------------------------------- */
-
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-    min-height: 2.9rem; padding: .75rem 1.3rem;
-    font: 600 .98rem/1 var(--sans);
-    border-radius: 10px;
-    border: 1px solid transparent;
-    text-decoration: none;
-    cursor: pointer;
-    transition: transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
-  }
-  .btn-go { background: var(--teal); color: var(--teal-ink); box-shadow: 0 0 0 0 var(--teal-glow); }
-  .btn-go:hover { box-shadow: 0 0 0 6px var(--teal-glow); }
-  .btn-go:active { transform: translateY(1px); }
-  .btn-line { background: transparent; color: var(--text); border-color: var(--line); }
-  .btn-line:hover { border-color: var(--soft); }
-  .btn-small { min-height: 2.35rem; padding: .5rem .95rem; font-size: .88rem; }
-  .btn[disabled] { opacity: .4; cursor: not-allowed; box-shadow: none; }
-  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
-
-  /* Hero ----------------------------------------------------------------- */
-
-  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line-soft); }
-
-  /* A faint drafting grid, fading out from the top. */
-  .hero::before {
-    content: "";
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
-    background-size: 56px 56px;
-    -webkit-mask-image: radial-gradient(120% 80% at 70% 0%, #000 30%, transparent 75%);
-            mask-image: radial-gradient(120% 80% at 70% 0%, #000 30%, transparent 75%);
-    pointer-events: none;
-  }
-
-  .hero .wrap {
-    position: relative;
+  .sky { position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(to top, var(--dusk), var(--night) 70%); }
+  .sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; display: block; }
+  .sky .wrap {
+    min-height: min(56rem, 100svh);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
-    gap: clamp(2.5rem, 4.5vw, 4rem);
-    align-items: center;
-    padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3.5rem, 8vw, 6.5rem);
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
+    align-items: end;
+    gap: 2.5rem;
+    padding-block: clamp(8rem, 18vh, 12rem) clamp(3rem, 8vh, 5.5rem);
   }
-  @media (max-width: 60rem) { .hero .wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 60rem) { .sky .wrap { grid-template-columns: 1fr; align-items: end; min-height: 0; padding-top: clamp(15rem, 52vw, 22rem); } }
 
-  .hero-copy { display: flex; flex-direction: column; gap: 1.6rem; }
-
-  .role { display: flex; flex-wrap: wrap; gap: .5rem; }
-
-  .hero h1 {
-    font-size: clamp(2.1rem, 1.3rem + 2.9vw, 3.55rem);
-    font-weight: 780;
-    font-stretch: 108%;
-    line-height: 1.02;
+  .hero-copy { display: flex; flex-direction: column; gap: 1.6rem; max-width: 44rem; }
+  .hero-copy h1 {
+    font-size: clamp(2.7rem, 1.35rem + 5.2vw, 5.9rem);
+    line-height: .98;
+    font-weight: 200;
     letter-spacing: -.035em;
   }
-  .hero h1 .run { display: block; color: var(--soft); font-weight: 600; font-stretch: 100%; letter-spacing: -.03em; }
-  .hero h1 .run em { font-style: normal; color: var(--teal); }
-
-  .lede { font-size: clamp(1.08rem, 1rem + .35vw, 1.25rem); color: var(--soft); max-width: 31rem; }
+  .hero-copy h1 em { font-style: normal; font-weight: 300; }
+  .hero-copy .lede { font-size: clamp(1.08rem, 1rem + .35vw, 1.3rem); color: var(--mist); max-width: 34rem; font-weight: 300; }
   .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .where { font-size: .9rem; color: var(--faint); }
 
-  /* The desk console: an interactive demo of what the hero promises. */
-
-  .console-wrap { position: relative; }
-  .console-wrap::before {
-    content: "";
-    position: absolute; inset: -12% -8%;
-    background:
-      radial-gradient(40% 45% at 30% 35%, var(--purple-glow), transparent 70%),
-      radial-gradient(35% 40% at 75% 75%, rgba(45, 226, 196, .10), transparent 70%);
-    filter: blur(10px);
-    pointer-events: none;
+  /* The observation panel: a sample client's history printing itself. */
+  .observe {
+    align-self: end;
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 1rem;
+    display: flex; flex-direction: column; gap: .75rem;
+    max-width: 24rem;
+    width: 100%;
+    justify-self: end;
   }
-
-  .console {
-    position: relative;
-    background: linear-gradient(180deg, var(--panel-2), var(--panel));
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    box-shadow: 0 40px 80px -40px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);
-    overflow: hidden;
-  }
-
-  .console-bar {
-    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
-    padding: .8rem 1rem;
-    border-bottom: 1px solid var(--line);
-    background: rgba(255,255,255,.015);
-  }
-  .console-title { display: flex; align-items: center; gap: .6rem; font: 400 .72rem/1 var(--mono); font-stretch: 87.5%; color: var(--soft); }
-  .dots { display: inline-flex; gap: 5px; }
-  .dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
-
-  .console-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  }
-  @media (max-width: 34rem) { .console-body { grid-template-columns: 1fr; } }
-
-  .client {
-    padding: 1.2rem;
-    border-right: 1px solid var(--line);
-    display: flex; flex-direction: column; gap: 1rem;
-  }
-  @media (max-width: 34rem) { .client { border-right: 0; border-bottom: 1px solid var(--line); } }
-
-  .client-head { display: flex; align-items: center; gap: .7rem; }
-  .avatar {
-    width: 2.3rem; height: 2.3rem; border-radius: 50%;
-    display: grid; place-items: center;
-    background: var(--purple-soft); color: var(--purple);
-    font-weight: 700; font-size: .85rem;
-    border: 1px solid rgba(155,123,255,.35);
-  }
-  .client-name { font-weight: 650; font-size: 1rem; line-height: 1.2; }
-  .client-sub { font: 400 .66rem/1.3 var(--mono); font-stretch: 87.5%; color: var(--dim); }
-
-  .stamps {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .45rem;
-  }
-  .stamps li {
-    aspect-ratio: 1; max-width: 100%;
-    border-radius: 50%;
-    border: 1.5px dashed var(--line);
-    display: grid; place-items: center;
-    color: var(--dim);
-    font: 400 .6rem/1 var(--mono);
-    transition: background .25s ease, border-color .25s ease;
-  }
-  .stamps li.on {
-    border: 1.5px solid var(--purple);
-    background: var(--purple-soft);
-    color: var(--purple);
-    box-shadow: 0 0 12px -2px var(--purple-glow);
-  }
-  .stamps li svg { width: 52%; height: 52%; }
-  .stamps li.pop { animation: pop .45s cubic-bezier(.2, 1.5, .4, 1); }
-  @keyframes pop { from { transform: scale(1.4) rotate(-14deg); } to { transform: none; } }
-
-  .meter { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
-  .meter-count { font-weight: 750; font-stretch: 110%; font-size: 1.5rem; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-  .meter-count span { color: var(--dim); font-weight: 500; font-size: 1rem; }
-  .meter-note { font: 400 .66rem/1.3 var(--mono); font-stretch: 87.5%; color: var(--dim); text-align: right; }
-
-  .reward {
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: .65rem .8rem;
-    font-size: .85rem; color: var(--soft);
-    display: flex; align-items: center; justify-content: space-between; gap: .5rem;
-  }
-  .reward.ready {
-    border-color: var(--magenta);
-    background: var(--magenta-soft);
-    color: var(--text);
-    box-shadow: 0 0 24px -8px var(--magenta);
-  }
-  .reward.ready b { color: var(--magenta); }
-
-  .ledger { padding: 1.2rem; display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
-  .ledger-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
-  .ledger-head h2 { font-size: .9rem; font-weight: 650; letter-spacing: 0; }
-
-  .rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font: 400 .7rem/1.35 var(--mono); font-stretch: 87.5%; }
-  .rows li {
-    display: grid;
-    grid-template-columns: 3.2rem minmax(0, 1fr) 1.9rem 1.5rem;
-    gap: .5rem;
-    padding: .5rem 0;
-    border-bottom: 1px solid var(--line-soft);
-    color: var(--soft);
-    font-variant-numeric: tabular-nums;
-  }
-  .rows li:first-child { padding-top: 0; }
-  .rows .when { color: var(--dim); }
-  .rows .what { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .rows .delta, .rows .bal { text-align: right; }
-  .rows .delta.plus { color: var(--purple); }
-  .rows .delta.minus { color: var(--magenta); }
-  .rows li.new { animation: slide .4s ease-out; }
-  @keyframes slide { from { transform: translateY(-6px); background: rgba(155,123,255,.08); } to { transform: none; background: transparent; } }
-
-  .console-foot {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem;
-    padding: .9rem 1rem;
-    border-top: 1px solid var(--line);
-    background: rgba(0,0,0,.18);
-  }
-  .console-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
-  .console-hint { font: 400 .66rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); max-width: 17rem; }
-
-  .drift {
-    display: flex; gap: .75rem; align-items: flex-start;
-    margin: 0 1rem 1rem;
-    padding: .75rem .85rem;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 79, 174, .35);
-    background: var(--magenta-soft);
-    font-size: .85rem; color: var(--soft);
-  }
-  .drift b { color: var(--text); font-weight: 650; }
-  .drift-dot { flex: none; width: 8px; height: 8px; margin-top: .45rem; border-radius: 50%; background: var(--magenta); box-shadow: 0 0 10px var(--magenta); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .stamps li.pop, .rows li.new { animation: none; }
-    .stamps li { transition: none; }
-  }
+  @media (max-width: 60rem) { .observe { justify-self: start; } }
+  .observe-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .observe-head b { font-weight: 500; font-size: .95rem; }
+  .log { list-style: none; margin: 0; padding: 0; display: grid; gap: .1rem; font-size: .9rem; }
+  .log li { display: grid; grid-template-columns: 3.9rem 1fr auto; gap: .75rem; padding: .3rem 0; color: var(--mist); }
+  .log .when { color: var(--faint); }
+  .log .pts { color: var(--silver); }
+  .log li.fresh { animation: settle 1.2s cubic-bezier(.16, 1, .3, 1); }
+  @keyframes settle { from { color: var(--violet); } to { color: var(--mist); } }
+  .observe-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; border-top: 1px solid var(--rule); padding-top: .6rem; }
+  .observe-foot .total { font-size: 1.6rem; font-weight: 250; letter-spacing: -.02em; }
+  .observe-foot span:last-child { font-size: .85rem; color: var(--mist); text-align: right; }
 
   /* Sections ------------------------------------------------------------- */
 
-  section { scroll-margin-top: 4.5rem; }
-  .band { padding-block: clamp(4rem, 9vw, 7rem); border-bottom: 1px solid var(--line-soft); }
+  section { scroll-margin-top: 5rem; }
+  .band { padding-block: clamp(5rem, 11vw, 9rem); }
+  .band + .band { border-top: 1px solid var(--rule); }
+  .head { display: flex; flex-direction: column; gap: 1.1rem; max-width: 46rem; margin-bottom: clamp(2.75rem, 6vw, 4.5rem); }
+  .head h2 { font-size: clamp(2rem, 1.2rem + 3vw, 3.6rem); line-height: 1.04; font-weight: 200; letter-spacing: -.03em; }
+  .head p { color: var(--mist); font-size: 1.1rem; font-weight: 300; max-width: 38rem; }
 
-  .head { display: flex; flex-direction: column; gap: 1rem; max-width: 44rem; margin-bottom: clamp(2.25rem, 5vw, 3.5rem); }
-  .head h2 {
-    font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.1rem);
-    font-weight: 760;
-    font-stretch: 110%;
-    letter-spacing: -.03em;
-    line-height: 1.05;
-  }
-  .head p { color: var(--soft); max-width: 36rem; }
-
-  /* The work: each project as a case file with the mechanism drawn. */
-
-  .cases { display: flex; flex-direction: column; gap: 1rem; }
-
-  .case {
+  /* Drifting: the signature. Each client is an edge of light. */
+  .clients { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .client {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    background: var(--base);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
+    grid-template-columns: minmax(9rem, 1fr) minmax(0, 2.2fr) minmax(9.5rem, auto);
+    align-items: center;
+    gap: 1rem 2rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--rule);
   }
-  @media (max-width: 56rem) { .case { grid-template-columns: 1fr; } }
+  @media (max-width: 44rem) { .client { grid-template-columns: 1fr auto; } .client .edge { grid-column: 1 / -1; grid-row: 2; } }
+  .client-name { display: flex; flex-direction: column; gap: .15rem; }
+  .client-name b { font-weight: 500; }
+  .client-name span { font-size: .88rem; color: var(--faint); }
+  .edge { height: 44px; width: 100%; display: block; overflow: visible; }
+  .edge path { fill: none; stroke-linecap: round; transition: opacity 1.4s cubic-bezier(.16, 1, .3, 1), stroke-width 1.4s cubic-bezier(.16, 1, .3, 1); }
+  .edge .body { stroke: rgba(232, 236, 242, .16); stroke-width: 10; }
+  .edge .fringe { stroke-width: 2; }
+  .client[data-state="vivid"] .fringe { opacity: 1; stroke-width: 2.4; }
+  .client[data-state="vivid"] .body { opacity: 1; }
+  .client[data-state="forming"] .fringe { opacity: .7; stroke-dasharray: 2 5; animation: form 2.4s linear infinite; }
+  .client[data-state="dispersing"] .fringe { opacity: .32; stroke-dasharray: 1 11; }
+  .client[data-state="dispersing"] .body { opacity: .5; }
+  .client[data-state="absent"] .fringe { opacity: .1; stroke-dasharray: 1 16; }
+  .client[data-state="absent"] .body { opacity: .2; }
+  @keyframes form { to { stroke-dashoffset: -28; } }
+  .client-state { display: flex; flex-direction: column; align-items: flex-end; gap: .45rem; text-align: right; }
+  @media (max-width: 44rem) { .client-state { grid-column: 2; grid-row: 1; } }
+  .client-state .word { font-size: .92rem; color: var(--mist); }
+  .client[data-state="vivid"] .word { color: var(--silver); }
+  .client[data-state="dispersing"] .word, .client[data-state="absent"] .word { color: var(--rose); }
+  .drift-note { margin-top: 1.4rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .75rem 2rem; color: var(--mist); font-size: .95rem; }
+  .drift-note output { color: var(--silver); }
 
-  .case-text { padding: clamp(1.4rem, 3vw, 2.2rem); display: flex; flex-direction: column; gap: 1rem; }
-  .case-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; }
-  .case h3 { font-size: clamp(1.4rem, 1.15rem + 1vw, 1.85rem); font-weight: 720; font-stretch: 108%; letter-spacing: -.025em; line-height: 1.12; }
-  .case-sum { color: var(--soft); }
+  /* Work ----------------------------------------------------------------- */
 
-  .try { display: flex; flex-direction: column; gap: .65rem; margin-top: .4rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-  .try-links { display: flex; flex-wrap: wrap; gap: .5rem; }
-
-  .facts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .7rem; }
-  .facts li { display: grid; grid-template-columns: .9rem minmax(0, 1fr); gap: .7rem; font-size: .98rem; }
-  .facts li::before { content: ""; width: 7px; height: 7px; margin-top: .6em; border-radius: 2px; background: var(--teal); }
-
-  /* The drawn mechanism. HTML rather than an image so it reflows. */
-  .flow {
-    position: relative;
-    background:
-      linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px) 0 0 / 28px 28px,
-      linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px) 0 0 / 28px 28px,
-      var(--panel);
-    border-left: 1px solid var(--line);
-    padding: clamp(1.4rem, 3vw, 2.2rem);
-    display: flex; flex-direction: column; justify-content: center; gap: 1.1rem;
+  .project {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: center;
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+    border-top: 1px solid var(--rule);
   }
-  @media (max-width: 56rem) { .flow { border-left: 0; border-top: 1px solid var(--line); } }
+  .project:first-of-type { border-top: 0; padding-top: 0; }
+  .project.flip .project-media { order: -1; }
+  @media (max-width: 54rem) { .project { grid-template-columns: 1fr; } .project.flip .project-media { order: 0; } }
+  .project-text { display: flex; flex-direction: column; gap: 1.1rem; }
+  .project h3 { font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.6rem); line-height: 1.08; font-weight: 250; letter-spacing: -.025em; }
+  .status { font-size: .9rem; color: var(--mist); display: inline-flex; align-items: center; gap: .55rem; }
+  .status svg { width: 1.4rem; height: .5rem; }
+  .project-text > p { color: var(--mist); font-weight: 300; font-size: 1.05rem; max-width: 36rem; }
+  .facts { list-style: none; margin: .3rem 0 0; padding: 0; display: grid; gap: .8rem; max-width: 36rem; }
+  .facts li { padding-left: 1.4rem; position: relative; }
+  .facts li::before { content: ""; position: absolute; left: 0; top: .78em; width: .7rem; height: 1px; background: var(--edge); }
+  .try { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .5rem; }
 
-  .flow-caption { font: 400 .68rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); }
-
-  /* A case with a real recording: the phone sits beside the drawn flow. */
-  .flow.has-demo { display: grid; grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr); gap: 1.5rem clamp(1.25rem, 3vw, 2rem); align-items: center; }
-  .flow.has-demo .flow-steps { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
-  @media (max-width: 34rem) { .flow.has-demo { grid-template-columns: 1fr; justify-items: center; } .flow.has-demo .flow-steps { justify-self: stretch; } }
-
-  .phone { margin: 0; display: flex; flex-direction: column; gap: .6rem; width: 100%; max-width: 13.5rem; }
+  .project-media { display: flex; justify-content: center; }
+  .phone { margin: 0; width: min(17.5rem, 78vw); display: flex; flex-direction: column; gap: .8rem; }
   .phone-frame {
     position: relative;
-    aspect-ratio: 540 / 1168;
-    max-width: 100%;
-    border-radius: 1.6rem;
-    padding: .4rem;
-    background: linear-gradient(160deg, #262b3a, #0c0e15);
-    border: 1px solid var(--line);
-    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .03) inset;
+    aspect-ratio: 390 / 844;
+    border-radius: 2.1rem;
+    padding: .45rem;
+    background: #0e1526;
+    border: 1px solid var(--rule-strong);
+    box-shadow: 0 40px 70px -40px rgba(0, 0, 0, .9), 0 16px 28px -22px rgba(0, 0, 0, .6);
   }
-  .phone-frame video, .phone-frame img {
-    display: block; width: 100%; height: 100%; object-fit: cover;
-    border-radius: 1.25rem; background: #000;
+  .phone-frame::after {
+    content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+    background: var(--edge); opacity: .45;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
   }
-  .phone figcaption { font: 400 .64rem/1.4 var(--mono); font-stretch: 87.5%; color: var(--dim); text-align: center; }
+  .phone-frame video { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 1.7rem; background: #000; }
+  .phone figcaption { font-size: .82rem; color: var(--faint); text-align: center; }
+  .memorial-media { width: 100%; max-width: 26rem; border-top: 1px solid var(--rule-strong); padding-top: 1.2rem; display: grid; gap: .9rem; }
+  .memorial-media p { color: var(--mist); font-weight: 300; font-size: 1.05rem; }
+  .memorial-media blockquote { margin: 0; font-size: clamp(1.3rem, 1rem + 1vw, 1.7rem); font-weight: 250; line-height: 1.3; letter-spacing: -.01em; }
 
-  .track { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
-  .track li {
-    position: relative;
-    display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) auto; gap: .8rem; align-items: center;
-    padding: .55rem 0;
-    font-size: .95rem; color: var(--soft);
-  }
-  .track li::before {
-    content: ""; justify-self: center;
-    width: 12px; height: 12px; border-radius: 50%;
-    border: 2px solid var(--line); background: var(--panel);
-    position: relative; z-index: 1;
-  }
-  .track li:not(:last-child)::after {
-    content: ""; position: absolute; left: calc(.75rem - 1px); top: calc(50% + 6px);
-    width: 2px; height: 100%; background: var(--line);
-  }
-  .track li.done::before { border-color: var(--teal); background: var(--teal); }
-  .track li.done:not(:last-child)::after { background: linear-gradient(var(--teal), var(--line)); }
-  .track li.now { color: var(--text); font-weight: 600; }
-  .track li.now::before { border-color: var(--teal); background: var(--panel); box-shadow: 0 0 0 4px var(--teal-glow); }
-  .track .who { font: 400 .64rem/1 var(--mono); font-stretch: 87.5%; color: var(--dim); }
+  /* What I build --------------------------------------------------------- */
 
-  /* What I build ----------------------------------------------------------- */
+  .offers { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .offer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 1rem 3rem; padding-block: clamp(1.6rem, 3.5vw, 2.4rem); border-bottom: 1px solid var(--rule); align-items: baseline; }
+  @media (max-width: 48rem) { .offer { grid-template-columns: 1fr; } }
+  .offer h3 { font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem); font-weight: 250; line-height: 1.12; }
+  .offer p { color: var(--mist); font-weight: 300; }
+  .offer.lead h3 { font-size: clamp(2rem, 1.2rem + 3vw, 3.5rem); font-weight: 200; letter-spacing: -.03em; }
+  .offer.lead p { color: var(--silver); font-size: 1.1rem; }
 
-  .offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  @media (max-width: 60rem) { .offers { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 40rem) { .offers { grid-template-columns: 1fr; } }
+  /* How I work ----------------------------------------------------------- */
 
-  .offer {
-    background: var(--base);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: clamp(1.4rem, 3vw, 1.9rem);
-    display: flex; flex-direction: column; gap: .8rem;
-  }
-  .offer h3 { font-size: 1.28rem; font-weight: 700; font-stretch: 106%; letter-spacing: -.02em; line-height: 1.2; }
-  .offer p { color: var(--soft); font-size: 1rem; }
-  .offer .path { margin-bottom: .2rem; }
-
-  .offer.lead {
-    grid-row: span 2;
-    background:
-      radial-gradient(120% 70% at 0% 0%, var(--purple-soft), transparent 60%),
-      var(--base);
-    border-color: rgba(155, 123, 255, .4);
-    justify-content: space-between;
-  }
-  .offer.lead h3 { font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem); font-stretch: 112%; }
-  .offer.lead .path b { color: var(--purple); }
-  @media (max-width: 60rem) { .offer.lead { grid-row: auto; grid-column: 1 / -1; } }
-
-  /* A mini points ledger inside the loyalty card: the idea in one glance. */
-  .mini-ledger { list-style: none; margin: 0; padding: .9rem 1rem; border-radius: 10px; background: rgba(0,0,0,.25); border: 1px solid var(--line); font: 400 .68rem/1.4 var(--mono); font-stretch: 87.5%; display: grid; gap: .35rem; }
-  .mini-ledger li { display: flex; justify-content: space-between; gap: 1rem; color: var(--soft); }
-  .mini-ledger li span:last-child { color: var(--purple); font-variant-numeric: tabular-nums; }
-  .mini-ledger li.fix span:last-child { color: var(--magenta); }
-  .mini-ledger li.sum { border-top: 1px solid var(--line); padding-top: .4rem; color: var(--text); }
-  .mini-ledger li.sum span:last-child { color: var(--text); }
-
-  /* Rented vs built ---------------------------------------------------------- */
-
-  .versus { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--base); }
-  .versus-row {
-    display: grid;
-    grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.2fr);
-    border-top: 1px solid var(--line);
-  }
-  .versus-row:first-child { border-top: 0; }
-  .versus-row > * { padding: 1.1rem clamp(1rem, 2.5vw, 1.6rem); }
-  .versus-row.labels > * { font: 400 .68rem/1.3 var(--mono); font-stretch: 87.5%; color: var(--dim); padding-block: .9rem; }
-  .versus-row.labels .me { color: var(--teal); }
-  .versus-q { font-weight: 650; }
-  .versus-them { color: var(--dim); }
-  .versus-me { color: var(--text); background: rgba(45, 226, 196, .035); border-left: 1px solid var(--line); }
-  .versus-me b { font-weight: 650; }
-  .versus-row.labels .me { background: rgba(45, 226, 196, .035); border-left: 1px solid var(--line); }
-
-  @media (max-width: 44rem) {
-    .versus-row { grid-template-columns: 1fr; }
+  .versus { display: grid; }
+  .versus-row { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem 2.5rem; padding-block: 1.35rem; border-bottom: 1px solid var(--rule); }
+  .versus-row.labels { border-bottom-color: var(--rule-strong); padding-block: 0 .8rem; font-size: .88rem; color: var(--faint); }
+  .versus-row.labels .me { color: var(--violet); }
+  .versus-q { font-weight: 500; }
+  .versus-them { color: var(--faint); }
+  .versus-me b { font-weight: 500; }
+  @media (max-width: 48rem) {
+    .versus-row { grid-template-columns: 1fr; gap: .4rem; }
     .versus-row.labels { display: none; }
-    .versus-row > * { padding-block: .35rem; }
-    .versus-q { padding-top: 1.1rem; }
-    .versus-them::before { content: "Rented platform: "; color: var(--dim); font: 400 .66rem/1 var(--mono); font-stretch: 87.5%; display: block; margin-bottom: .3rem; }
-    .versus-me { border-left: 0; background: transparent; padding-bottom: 1.1rem; }
-    .versus-me::before { content: "With me: "; color: var(--teal); font: 400 .66rem/1 var(--mono); font-stretch: 87.5%; display: block; margin-bottom: .3rem; }
+    .versus-them::before { content: "Rented platform: "; color: var(--faint); }
+    .versus-me::before { content: "With me: "; color: var(--violet); }
   }
+  .start { margin-top: clamp(3rem, 6vw, 4.5rem); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+  @media (max-width: 52rem) { .start { grid-template-columns: 1fr; gap: 1.5rem; } }
+  .start div { display: grid; gap: .5rem; align-content: start; }
+  .start h3 { font-size: 1.3rem; font-weight: 300; }
+  .start h3 span { color: var(--faint); }
+  .start p { color: var(--mist); font-weight: 300; }
 
-  /* Starting: a real sequence, so it is numbered. */
-  .steps { list-style: none; margin: clamp(2.5rem, 5vw, 3.5rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; counter-reset: step; }
-  @media (max-width: 52rem) { .steps { grid-template-columns: 1fr; } }
-  .steps li { counter-increment: step; border-top: 1px solid var(--line); padding-top: 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
-  .steps li::before { content: "0" counter(step); font: 400 .72rem/1 var(--mono); color: var(--teal); }
-  .steps h3 { font-size: 1.15rem; font-weight: 680; letter-spacing: -.015em; }
-  .steps p { color: var(--soft); font-size: .98rem; }
+  /* About and contact ------------------------------------------------------ */
 
-  /* About + contact ------------------------------------------------------------ */
-
-  .closing .wrap {
-    display: grid;
-    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
-    gap: clamp(2.5rem, 6vw, 5rem);
-    align-items: start;
-  }
+  .closing .wrap { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(3rem, 7vw, 7rem); align-items: start; }
   @media (max-width: 58rem) { .closing .wrap { grid-template-columns: 1fr; } }
+  .about { display: grid; gap: 1.4rem; }
+  .about h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.2rem); font-weight: 200; line-height: 1.05; letter-spacing: -.03em; }
+  .about h2 span { color: var(--mist); }
+  .todo { border: 1px dashed var(--rose); color: #ffd3e5; border-radius: .5rem; padding: .85rem 1rem; font-size: .9rem; }
+  .price { border-top: 1px solid var(--rule); padding-top: 1.2rem; font-size: 1.15rem; font-weight: 300; }
 
-  .about { display: flex; flex-direction: column; gap: 1.3rem; }
-  .about .hello {
-    font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.5rem);
-    font-weight: 760; font-stretch: 110%;
-    letter-spacing: -.03em; line-height: 1.08;
-    text-wrap: balance;
-  }
-  .about .hello span { color: var(--soft); font-weight: 600; font-stretch: 100%; }
-
-  .todo {
-    border: 1px dashed var(--magenta);
-    background: var(--magenta-soft);
-    color: #ffc4e3;
-    border-radius: 10px;
-    padding: .8rem 1rem;
-    font: 400 .72rem/1.55 var(--mono);
-    font-stretch: 87.5%;
-  }
-
-  .price { border-top: 1px solid var(--line); padding-top: 1.2rem; display: flex; flex-direction: column; gap: .5rem; }
-  .price p:not(.path) { font-size: 1.15rem; font-weight: 600; }
-
-  .contact {
-    position: relative;
-    background: linear-gradient(180deg, var(--panel-2), var(--panel));
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: clamp(1.4rem, 4vw, 2.4rem);
-    display: flex; flex-direction: column; gap: 1.5rem;
-    box-shadow: 0 40px 80px -50px rgba(45, 226, 196, .25);
-  }
-  .contact h2 { font-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.1rem); font-weight: 740; font-stretch: 108%; letter-spacing: -.025em; line-height: 1.12; }
-
-  form { display: flex; flex-direction: column; gap: 1.1rem; }
-  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+  .contact { display: grid; gap: 1.6rem; }
+  .contact h2 { font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.5rem); font-weight: 250; line-height: 1.12; letter-spacing: -.02em; }
+  .contact > p { color: var(--mist); font-weight: 300; }
+  form { display: grid; gap: 1.25rem; }
+  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
   @media (max-width: 34rem) { .row { grid-template-columns: 1fr; } }
-  .field { display: flex; flex-direction: column; gap: .45rem; }
-  .field label { font-size: .9rem; font-weight: 600; }
-  .field .opt { color: var(--dim); font-weight: 400; }
-
+  .field { display: grid; gap: .45rem; }
+  .field label { font-size: .92rem; color: var(--mist); }
+  .field .opt { color: var(--faint); }
   input, textarea {
-    font: inherit; font-size: 1rem;
-    color: var(--text);
-    background: var(--void);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: .75rem .9rem;
+    font: inherit; color: var(--silver);
+    background: transparent;
+    border: 0; border-bottom: 1px solid var(--rule-strong);
+    border-radius: 0;
+    padding: .6rem 0 .7rem;
     width: 100%;
-    transition: border-color .15s ease, box-shadow .15s ease;
+    transition: border-color .3s;
   }
-  input::placeholder, textarea::placeholder { color: var(--dim); }
-  input:focus, textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
-  textarea { min-height: 8.5rem; resize: vertical; }
+  input::placeholder, textarea::placeholder { color: var(--faint); }
+  input:focus, textarea:focus { outline: none; border-bottom-color: var(--violet); }
+  textarea { min-height: 7.5rem; resize: vertical; line-height: 1.55; }
+  .form-note { font-size: .9rem; color: var(--faint); }
+  .form-error { font-size: .95rem; color: var(--silver); border-top: 1px solid var(--rose); padding-top: .6rem; }
+  .form-done { border-top: 1px solid var(--violet); padding-top: 1rem; font-size: 1.1rem; font-weight: 300; }
 
-  .form-note { font-size: .9rem; color: var(--dim); }
-  .form-error { font-size: .95rem; color: var(--text); border-left: 2px solid var(--magenta); padding-left: .75rem; }
-  .form-done { border: 1px solid var(--teal); background: rgba(45,226,196,.07); border-radius: 12px; padding: 1.1rem 1.2rem; }
-  .form-done strong { color: var(--teal); }
-
-  footer .wrap {
-    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem 2rem;
-    padding-block: 2rem 2.6rem;
-    color: var(--dim); font-size: .88rem;
-  }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 2rem; padding-block: 2.5rem 3rem; border-top: 1px solid var(--rule); color: var(--faint); font-size: .9rem; }
 </style>
 </head>
 <body>
 
-<header class="top">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="spectrum" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#8eeecf"/>
+      <stop offset=".35" stop-color="#86c6ff"/>
+      <stop offset=".65" stop-color="#b8a4ff"/>
+      <stop offset="1" stop-color="#f3a8c8"/>
+    </linearGradient>
+    <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-out" viewBox="0 0 20 20"><path d="M7 5h8v8M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v11M5 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="top" id="top-bar">
   <div class="wrap">
-    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span data-brand>crowdotcom</span></a>
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 26 16" aria-hidden="true"><path d="M2 12c4-7 9-9 13-7s6 6 9 1" fill="none" stroke="url(#spectrum)" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span data-brand>crowdotcom</span>
+    </a>
     <nav class="nav" aria-label="Sections">
+      <a href="#drifting">Loyalty</a>
       <a href="#work">Work</a>
-      <a href="#build">What I build</a>
       <a href="#how">How I work</a>
-      <a class="btn btn-go btn-small" href="#contact">Get in touch</a>
+      <a class="act small" href="#contact">Get in touch</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
 
-  <!-- Hero ================================================================ -->
-  <section class="hero" aria-labelledby="hero-title">
+  <section class="sky" aria-labelledby="hero-title">
+    <canvas id="sky" aria-hidden="true"></canvas>
     <div class="wrap">
-
       <div class="hero-copy">
-        <div class="role">
-          <span class="tag live">Loyalty Operations &amp; Digital Product Specialist</span>
-          <span class="tag">Across Canada · Edmonton and St. Albert</span>
-        </div>
-        <h1 id="hero-title">
-          Loyalty programs, client apps and websites, built for your business
-          <span class="run">and run by <em>the person who built them.</em></span>
-        </h1>
-        <p class="lede">I build the systems that bring your clients back, and I stay to keep them working.</p>
+        <h1 id="hero-title">Loyalty that brings your <em>clients back.</em></h1>
+        <p class="lede">Loyalty programs, client apps and websites, built for your business and run by the person who built them.</p>
         <div class="actions">
-          <a class="btn btn-go" href="#contact">Get in touch</a>
-          <a class="btn btn-line" href="#work">See the work</a>
+          <a class="act primary" href="https://crowdotwave.github.io/nith-valley-app/?demo=client" target="_blank" rel="noopener">Try the live demo <svg aria-hidden="true"><use href="#i-out"/></svg></a>
+          <a class="act" href="#contact">Get in touch <svg aria-hidden="true"><use href="#i-down"/></svg></a>
         </div>
+        <p class="where">Working with small businesses across Canada. Based in Edmonton and St. Albert.</p>
       </div>
 
-      <div class="console-wrap">
-        <div class="console" id="demo">
-          <div class="console-bar">
-            <span class="console-title"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>front desk · loyalty</span>
-            <span class="tag">Try it · example data</span>
-          </div>
-
-          <div class="console-body">
-            <div class="client">
-              <div class="client-head">
-                <span class="avatar" aria-hidden="true">SR</span>
-                <div>
-                  <p class="client-name">Sam R.</p>
-                  <p class="client-sub">example client</p>
-                </div>
-              </div>
-
-              <ul class="stamps" id="stamps" role="img" aria-label="Visit card"></ul>
-
-              <div class="meter">
-                <p class="meter-count"><output id="count">7</output><span> / 10</span></p>
-                <p class="meter-note">visits to<br>next reward</p>
-              </div>
-
-              <div class="reward" id="reward"><span>Reward at 10 visits</span><b>3 to go</b></div>
-            </div>
-
-            <div class="ledger">
-              <div class="ledger-head">
-                <h2>Points history</h2>
-                <span class="client-sub">every point explained</span>
-              </div>
-              <ul class="rows" id="rows" aria-live="polite" aria-label="Points history, newest first"></ul>
-            </div>
-          </div>
-
-          <div class="drift">
-            <span class="drift-dot" aria-hidden="true"></span>
-            <p><b>4 clients</b> have a reward waiting and have not been in for 90 days. One note brings them back.</p>
-          </div>
-
-          <div class="console-foot">
-            <div class="console-actions">
-              <button class="btn btn-go btn-small" id="award" type="button">Award a visit</button>
-              <button class="btn btn-line btn-small" id="undo" type="button" disabled>Undo</button>
-            </div>
-            <p class="console-hint">Undo never deletes. It adds a correcting line, so the history always adds up.</p>
-          </div>
-        </div>
-      </div>
-
+      <aside class="observe" aria-label="A sample client's points history">
+        <div class="observe-head"><b>Harper household</b><span class="sample">Sample client</span></div>
+        <ul class="log" id="log" aria-live="polite">
+          <li><span class="when">Aug 26</span><span>Annual exam</span><span class="pts">+25</span></li>
+          <li><span class="when">Sep 05</span><span>Bag of food</span><span class="pts">+15</span></li>
+          <li><span class="when">Sep 14</span><span>Prescription refill</span><span class="pts">+10</span></li>
+        </ul>
+        <div class="observe-foot"><span class="total"><output id="total">135</output> pts</span><span id="next">One bag of food from $10 off an exam</span></div>
+      </aside>
     </div>
   </section>
 
-  <!-- The work ============================================================ -->
+  <section class="band" id="drifting" aria-labelledby="drift-title">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="drift-title">Some clients quietly drift. See them while there is still time to bring them back.</h2>
+        <p>Points and rewards keep regulars coming. The part most programs skip is the report that shows who stopped, so one note can reach them before they are gone.</p>
+      </div>
+
+      <ul class="clients" id="clients">
+        <li class="client" data-state="vivid">
+          <div class="client-name"><b>Harper household</b><span>In last week · 135 points</span></div>
+          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 30 C60 8 110 38 170 22 S290 6 340 24 S392 30 396 18"/><path class="fringe" stroke="url(#spectrum)" d="M4 26 C60 4 110 34 170 18 S290 2 340 20 S392 26 396 14"/></svg>
+          <div class="client-state"><span class="word">Regular</span></div>
+        </li>
+        <li class="client" data-state="forming">
+          <div class="client-name"><b>Okafor household</b><span>Joined this month · 40 points</span></div>
+          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 26 C70 34 120 12 190 24 S300 36 350 20 S392 22 396 26"/><path class="fringe" stroke="url(#spectrum)" d="M4 22 C70 30 120 8 190 20 S300 32 350 16 S392 18 396 22"/></svg>
+          <div class="client-state"><span class="word">New, still forming</span></div>
+        </li>
+        <li class="client" data-state="dispersing">
+          <div class="client-name"><b>Lindqvist household</b><span>Last in 11 weeks ago · 120 points waiting</span></div>
+          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 22 C50 30 130 10 200 26 S310 12 360 26 S392 20 396 22"/><path class="fringe" stroke="url(#spectrum)" d="M4 18 C50 26 130 6 200 22 S310 8 360 22 S392 16 396 18"/></svg>
+          <div class="client-state"><span class="word">Drifting</span><button class="act small primary" type="button" data-bring-back>Send a note</button></div>
+        </li>
+        <li class="client" data-state="absent">
+          <div class="client-name"><b>Marchetti household</b><span>Last in 7 months ago · 85 points waiting</span></div>
+          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 24 C80 14 140 32 210 20 S320 30 370 18 S392 24 396 20"/><path class="fringe" stroke="url(#spectrum)" d="M4 20 C80 10 140 28 210 16 S320 26 370 14 S392 20 396 16"/></svg>
+          <div class="client-state"><span class="word">Gone quiet</span><button class="act small primary" type="button" data-bring-back>Send a note</button></div>
+        </li>
+      </ul>
+      <p class="drift-note"><span class="sample">Sample clients. Try sending a note.</span><output id="drift-status">Two clients have points waiting and have not been in.</output></p>
+    </div>
+  </section>
+
   <section class="band" id="work" aria-labelledby="work-title">
     <div class="wrap">
       <div class="head">
-        <p class="path">/<b>work</b></p>
         <h2 id="work-title">Built for real businesses, around how they already run.</h2>
       </div>
 
-      <div class="cases">
+      <article class="project">
+        <div class="project-text">
+          <span class="status"><svg viewBox="0 0 28 10" aria-hidden="true"><path d="M1 7c6-6 12 2 18-3s7 1 8 0" fill="none" stroke="#f3a8c8" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Built and working, not yet in use</span>
+          <h3>Nith Valley Animal Hospital</h3>
+          <p>A client app and a front desk console for a veterinary clinic in New Hamburg, Ontario, built to sit alongside the clinic's existing practice software rather than replace it.</p>
+          <ul class="facts">
+            <li>Clients request food and medication refills from the pet's file, and follow each request through to ready for pickup, without phoning.</li>
+            <li>The app tells clients before food or a prescription runs out.</li>
+            <li>Points are awarded at the counter with one tap, and every point a client holds can be explained.</li>
+            <li>It never calculates a vaccination due date. It only repeats what staff entered, so it cannot tell someone their dog is due when it is not.</li>
+          </ul>
+          <div class="try">
+            <a class="act small primary" href="https://crowdotwave.github.io/nith-valley-app/?demo=client" target="_blank" rel="noopener">Try it as a pet owner <svg aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="act small" href="https://crowdotwave.github.io/nith-valley-app/?demo=staff" target="_blank" rel="noopener">As the front desk <svg aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
+          <p class="sample">The live demo runs on invented sample data.</p>
+        </div>
+        <div class="project-media">
+          <figure class="phone">
+            <div class="phone-frame">
+              <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/nith-demo-poster.jpg"
+                     aria-label="Recording of the clinic app: a client orders a refill of their dog's medication, the front desk reviews, approves and marks it ready, and the client sees it is ready for pickup.">
+                <source src="assets/work/nith-demo.mp4" type="video/mp4">
+                <source src="assets/work/nith-demo.webm" type="video/webm">
+              </video>
+            </div>
+            <figcaption>A refill, from the client's phone to the front desk and back</figcaption>
+          </figure>
+        </div>
+      </article>
 
-        <article class="case">
-          <div class="case-text">
-            <div class="case-meta">
-              <span class="path">Client app + front desk console</span>
-              <span class="tag wait">Built and working, not yet in use</span>
+      <article class="project flip">
+        <div class="project-text">
+          <span class="status"><svg viewBox="0 0 28 10" aria-hidden="true"><path d="M1 7c6-6 12 2 18-3s7 1 8 0" fill="none" stroke="url(#spectrum)" stroke-width="1.8" stroke-linecap="round"/></svg>In use</span>
+          <h3>A personal trainer</h3>
+          <p>The trainer builds programs and assigns them, clients log their sets on their phone, and both see progress over time.</p>
+          <ul class="facts">
+            <li>Built on the idea that clients quit when they cannot see it working, so the product is the evidence of progress, not the logging.</li>
+            <li>Works with no signal, in a basement gym, and catches up later.</li>
+            <li>Each client sees only their own data. That rule is enforced by the database, not just hidden on the screen.</li>
+          </ul>
+        </div>
+        <div class="project-media">
+          <figure class="phone">
+            <div class="phone-frame">
+              <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/ptc-demo-poster.jpg"
+                     aria-label="Recording of the workout app: a client picks the day's workout, logs two bench press sets, sets a personal record, then opens their progress charts.">
+                <source src="assets/work/ptc-demo.mp4" type="video/mp4">
+                <source src="assets/work/ptc-demo.webm" type="video/webm">
+              </video>
             </div>
-            <h3>Nith Valley Animal Hospital</h3>
-            <p class="case-sum">A client app and a front desk console for a veterinary clinic in New Hamburg, Ontario, built to sit alongside the clinic's existing practice software rather than replace it.</p>
-            <ul class="facts">
-              <li>Clients request food and medication refills from the pet's file, and follow each request through to ready for pickup, without phoning.</li>
-              <li>The app tells clients before food or a prescription runs out.</li>
-              <li>It never calculates a vaccination due date. It only repeats what staff entered, so it cannot tell someone their dog is due when it is not.</li>
-            </ul>
-            <div class="try">
-              <p class="path">Try the live demo, <b>sample data</b></p>
-              <div class="try-links">
-                <a class="btn btn-go btn-small" href="https://crowdotwave.github.io/nith-valley-app/?demo=client#/" target="_blank" rel="noopener">As a pet owner <span aria-hidden="true">&#8599;</span></a>
-                <a class="btn btn-line btn-small" href="https://crowdotwave.github.io/nith-valley-app/?demo=staff#/" target="_blank" rel="noopener">As the front desk <span aria-hidden="true">&#8599;</span></a>
-              </div>
-            </div>
-          </div>
-          <div class="flow has-demo">
-            <figure class="phone">
-              <div class="phone-frame">
-                <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/nith-demo-poster.jpg"
-                       aria-label="Recording of the clinic app: a client orders a refill of their dog's medication, the front desk reviews, approves and marks it ready, and the client sees it is ready for pickup.">
-                  <source src="assets/work/nith-demo.mp4" type="video/mp4">
-                  <source src="assets/work/nith-demo.webm" type="video/webm">
-                </video>
-              </div>
-              <figcaption>The real app, recorded in its demo mode</figcaption>
-            </figure>
-            <div class="flow-steps" aria-label="How a refill request moves">
-              <p class="flow-caption">One refill request, start to finish</p>
-              <ol class="track">
-                <li class="done"><span>Requested in the app</span><span class="who">client</span></li>
-                <li class="done"><span>Being looked at</span><span class="who">desk</span></li>
-                <li class="done"><span>Approved</span><span class="who">vet</span></li>
-                <li class="now"><span>Ready for pickup</span><span class="who">desk</span></li>
-                <li><span>Collected, points awarded in one tap</span><span class="who">counter</span></li>
-              </ol>
-              <p class="flow-caption">The client sees every step. No phone call at any of them.</p>
-            </div>
-          </div>
-        </article>
+            <figcaption>A personal record, logged mid-workout</figcaption>
+          </figure>
+        </div>
+      </article>
 
-        <article class="case">
-          <div class="case-text">
-            <div class="case-meta">
-              <span class="path">Workout app</span>
-              <span class="tag live">In use</span>
-            </div>
-            <h3>A personal trainer</h3>
-            <p class="case-sum">The trainer builds programs and assigns them, clients log their sets on their phone, and both see progress over time.</p>
-            <ul class="facts">
-              <li>Built on the idea that clients quit when they cannot see it working, so the product is the evidence of progress, not the logging.</li>
-              <li>Each client sees only their own data. That rule is enforced by the database, not just hidden on the screen.</li>
-            </ul>
+      <article class="project">
+        <div class="project-text">
+          <span class="status">Website</span>
+          <h3>A memorial resin artist</h3>
+          <p>A website for a small studio making memorial pieces from resin: a gallery, a memorial wall where people add the animals they have lost, and a page of grief support resources.</p>
+          <ul class="facts">
+            <li>Written so the owner can add photos and memorials without a developer.</li>
+            <li>A tender subject, handled plainly: no forms that silently throw away what someone wrote.</li>
+          </ul>
+        </div>
+        <div class="project-media">
+          <div class="memorial-media">
+            <blockquote>Nothing appears on the wall until the owner has seen it.</blockquote>
+            <p>A visitor writes about their animal, it reaches the owner's inbox first, and the owner adds it to the wall.</p>
           </div>
-          <div class="flow has-demo">
-            <figure class="phone">
-              <div class="phone-frame">
-                <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/ptc-demo-poster.jpg"
-                       aria-label="Recording of the workout app: a client picks the day's workout, logs two bench press sets, sets a personal record, then opens their progress charts.">
-                  <source src="assets/work/ptc-demo.mp4" type="video/mp4">
-                  <source src="assets/work/ptc-demo.webm" type="video/webm">
-                </video>
-              </div>
-              <figcaption>The real app, recorded with sample data</figcaption>
-            </figure>
-            <div class="flow-steps" aria-label="How a set is saved with no signal">
-              <p class="flow-caption">A set logged in a basement gym</p>
-              <ol class="track">
-                <li class="done"><span>Logged on the phone, no signal</span><span class="who">client</span></li>
-                <li class="done"><span>Saved on the phone first</span><span class="who">offline</span></li>
-                <li class="now"><span>Signal back, sent automatically</span><span class="who">sync</span></li>
-                <li><span>On the trainer's progress charts</span><span class="who">trainer</span></li>
-              </ol>
-              <p class="flow-caption">Nothing is lost when the gym has no reception.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="case">
-          <div class="case-text">
-            <div class="case-meta">
-              <span class="path">Website</span>
-            </div>
-            <h3>A memorial resin artist</h3>
-            <p class="case-sum">A website for a small studio making memorial pieces from resin: a gallery, a memorial wall where people add the animals they have lost, and a page of grief support resources.</p>
-            <ul class="facts">
-              <li>Written so the owner can add photos and memorials without a developer.</li>
-              <li>A tender subject, handled plainly: no forms that silently throw away what someone wrote.</li>
-            </ul>
-          </div>
-          <div class="flow" aria-label="How a memorial reaches the wall">
-            <p class="flow-caption">A memorial, from visitor to wall</p>
-            <ol class="track">
-              <li class="done"><span>A visitor writes about their animal</span><span class="who">visitor</span></li>
-              <li class="now"><span>Arrives in the owner's inbox first</span><span class="who">owner</span></li>
-              <li><span>Added to the wall by the owner</span><span class="who">owner</span></li>
-            </ol>
-            <p class="flow-caption">Nothing appears on the site until the owner has seen it.</p>
-          </div>
-        </article>
-
-      </div>
+        </div>
+      </article>
     </div>
   </section>
 
-  <!-- What I build ======================================================== -->
   <section class="band" id="build" aria-labelledby="build-title">
     <div class="wrap">
       <div class="head">
-        <p class="path">/<b>build</b></p>
         <h2 id="build-title">Made for your business, not rented from a vendor with five thousand customers.</h2>
       </div>
-
-      <div class="offers">
-        <div class="offer lead">
-          <div style="display:flex;flex-direction:column;gap:.8rem">
-            <p class="path">/build/<b>loyalty</b></p>
-            <h3>Loyalty and retention programs</h3>
-            <p>Points, rewards, and the reports that show who has quietly stopped coming back.</p>
-          </div>
-          <ul class="mini-ledger" aria-label="Example of a points history that adds up">
-            <li><span>Visit</span><span>+1</span></li>
-            <li><span>Refill</span><span>+1</span></li>
-            <li class="fix"><span>Correction, tapped twice</span><span>&minus;1</span></li>
-            <li><span>Visit</span><span>+1</span></li>
-            <li class="sum"><span>Balance</span><span>2</span></li>
-          </ul>
-        </div>
-        <div class="offer">
-          <p class="path">/build/<b>apps</b></p>
-          <h3>Client apps and staff tools</h3>
-          <p>An app for your clients and the matching screen for your front desk, working alongside the systems you already use.</p>
-        </div>
-        <div class="offer">
-          <p class="path">/build/<b>web</b></p>
-          <h3>Websites, fixed or rebuilt, then kept running</h3>
-          <p>Including the unglamorous part: the right address, phone numbers you can tap, and pages that do not break.</p>
-        </div>
-        <div class="offer">
-          <p class="path">/build/<b>automation</b></p>
-          <h3>Automating the repetitive work</h3>
-          <p>The task somebody does by hand every week that a small tool could do instead.</p>
-        </div>
-        <div class="offer">
-          <p class="path">/build/<b>your-idea</b></p>
-          <h3>Something that does not fit a box</h3>
-          <p>If it saves your business time or money and a small system could do it, it is worth a conversation.</p>
-        </div>
-      </div>
+      <ul class="offers">
+        <li class="offer lead"><h3>Loyalty and retention programs</h3><p>Points, rewards, and the reports that show who has quietly stopped coming back. Every point on the record can be explained, and a correction is a new line, never an edit.</p></li>
+        <li class="offer"><h3>Client apps and staff tools</h3><p>An app for your clients and the matching screen for your front desk, working alongside the systems you already use.</p></li>
+        <li class="offer"><h3>Websites, fixed or rebuilt, then kept running</h3><p>Including the unglamorous part: the right address, phone numbers you can tap, and pages that do not break.</p></li>
+        <li class="offer"><h3>Automating the repetitive work</h3><p>The task somebody does by hand every week that a small tool could do instead.</p></li>
+      </ul>
     </div>
   </section>
 
-  <!-- How I work ========================================================== -->
   <section class="band" id="how" aria-labelledby="how-title">
     <div class="wrap">
       <div class="head">
-        <p class="path">/<b>how</b></p>
         <h2 id="how-title">One person, who answers.</h2>
-        <p>What changes when the person who built your system is the one you call.</p>
+        <p>What changes when the person who built your system is the one you write to.</p>
       </div>
-
       <div class="versus" role="table" aria-label="A rented platform compared with working with me">
-        <div class="versus-row labels" role="row">
-          <span role="columnheader"></span>
-          <span role="columnheader">A platform with thousands of customers</span>
-          <span role="columnheader" class="me">With me</span>
-        </div>
-        <div class="versus-row" role="row">
-          <span class="versus-q" role="rowheader">Who you deal with</span>
-          <span class="versus-them" role="cell">A support queue, and someone new each time</span>
-          <span class="versus-me" role="cell"><b>One person.</b> No queue, no ticket, no explaining your business again.</span>
-        </div>
-        <div class="versus-row" role="row">
-          <span class="versus-q" role="rowheader">When you need a change</span>
-          <span class="versus-them" role="cell">It goes on their roadmap, if it suits everyone else</span>
-          <span class="versus-me" role="cell"><b>Changes in days, not quarters.</b> A request on Tuesday can be working by Friday.</span>
-        </div>
-        <div class="versus-row" role="row">
-          <span class="versus-q" role="rowheader">Your existing systems</span>
-          <span class="versus-them" role="cell">Replaced, or worked around</span>
-          <span class="versus-me" role="cell"><b>They stay where they are.</b> Your booking system, practice software and payment terminal keep working.</span>
-        </div>
-        <div class="versus-row" role="row">
-          <span class="versus-q" role="rowheader">When something cannot be done</span>
-          <span class="versus-them" role="cell">An upgrade tier, or silence</span>
-          <span class="versus-me" role="cell"><b>A straight answer, and why.</b> That is worth more than a feature that half works.</span>
-        </div>
+        <div class="versus-row labels" role="row"><span role="columnheader"></span><span role="columnheader">A platform with thousands of customers</span><span role="columnheader" class="me">With me</span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">Who you deal with</span><span class="versus-them" role="cell">A support queue, and someone new each time</span><span class="versus-me" role="cell"><b>One person.</b> No queue, no ticket, no explaining your business again.</span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When you need a change</span><span class="versus-them" role="cell">It goes on their roadmap, if it suits everyone else</span><span class="versus-me" role="cell"><b>Changes in days, not quarters.</b> A request on Tuesday can be working by Friday.</span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">Your existing systems</span><span class="versus-them" role="cell">Replaced, or worked around</span><span class="versus-me" role="cell"><b>They stay where they are.</b> Your booking system, practice software and payment terminal keep working.</span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When something cannot be done</span><span class="versus-them" role="cell">An upgrade tier, or silence</span><span class="versus-me" role="cell"><b>A straight answer, and why.</b> That is worth more than a feature that half works.</span></div>
       </div>
 
       <!-- [DECIDE] New copy, not in the brief: confirm these three steps match how Chris wants to start. -->
-      <ol class="steps">
-        <li>
-          <h3>Tell me the repetitive thing</h3>
-          <p>The phone calls, the spreadsheet, the task that eats an afternoon every week.</p>
-        </li>
-        <li>
-          <h3>I see how your desk works now</h3>
-          <p>What you already use stays. The new piece is built around it, not the other way round.</p>
-        </li>
-        <li>
-          <h3>You try a working version</h3>
-          <p>Something real in your hands, changed as you use it, and kept running after.</p>
-        </li>
-      </ol>
+      <div class="start">
+        <div><h3>Tell me the repetitive thing</h3><p>The phone calls, the spreadsheet, the task that eats an afternoon every week. In writing, whenever suits you.</p></div>
+        <div><h3>I work out how it fits</h3><p>What you already use stays. The new piece is built around it, not the other way round.</p></div>
+        <div><h3>You try a working version</h3><p>Something real in your hands, changed as you use it, and kept running after.</p></div>
+      </div>
     </div>
   </section>
 
-  <!-- About + contact ===================================================== -->
   <section class="band closing" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
-
-      <div class="about" id="about">
-        <p class="path">/<b>about</b></p>
-        <p class="hello">I'm Chris. <span>I work with small businesses across Canada, and locally in Edmonton and St. Albert.</span></p>
+      <div class="about">
+        <h2>I'm Chris. <span>I work with small businesses across Canada, and locally in Edmonton and St. Albert.</span></h2>
         <!-- [DECIDE] About: two or three sentences in Chris's own words. Delete this block when written. -->
         <p class="todo">[DECIDE] Two or three sentences from Chris: why this work, and what came before.</p>
-        <div class="price">
-          <p class="path">/<b>price</b></p>
-          <p>Every project is quoted for the business.</p>
-        </div>
+        <p class="price">Every project is quoted for the business.</p>
       </div>
 
       <div class="contact">
-        <div class="head" style="margin-bottom:0">
-          <p class="path">/<b>contact</b></p>
-          <h2 id="contact-title">Tell me about the most repetitive thing your front desk does every week.</h2>
-        </div>
-
+        <h2 id="contact-title">Tell me about the most repetitive thing your front desk does every week.</h2>
+        <p>Write whenever suits you. I reply in writing, usually within a day.</p>
         <!-- [DECIDE] Replace YOUR_FORM_ID with the real Formspree form ID. The form switches on by itself once it is replaced. -->
         <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
           <p class="todo" id="form-off" hidden>[DECIDE] This form is not connected yet, so nothing typed here would be sent. It switches on once the form service is set up.</p>
           <div class="row">
-            <div class="field">
-              <label for="f-name">Your name</label>
-              <input id="f-name" name="name" type="text" autocomplete="name" required>
-            </div>
-            <div class="field">
-              <label for="f-email">Email</label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required>
-            </div>
+            <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
           </div>
-          <div class="field">
-            <label for="f-business">Business <span class="opt">(optional)</span></label>
-            <input id="f-business" name="business" type="text" autocomplete="organization">
-          </div>
-          <div class="field">
-            <label for="f-message">What takes up your week?</label>
-            <textarea id="f-message" name="message" placeholder="Every morning someone phones five clients to remind them about refills..." required></textarea>
-          </div>
-          <div>
-            <button class="btn btn-go" id="f-send" type="submit">Send message</button>
-          </div>
-          <p class="form-note" id="form-status" role="status" aria-live="polite">I reply personally, usually within a day.</p>
+          <div class="field"><label for="f-business">Business <span class="opt">(optional)</span></label><input id="f-business" name="business" type="text" autocomplete="organization"></div>
+          <div class="field"><label for="f-message">What takes up your week?</label><textarea id="f-message" name="message" placeholder="Every morning someone phones five clients to remind them about refills..." required></textarea></div>
+          <div><button class="act primary" id="f-send" type="submit">Send message <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+          <p class="form-note" id="form-status" role="status" aria-live="polite"></p>
         </form>
       </div>
-
     </div>
   </section>
 
@@ -967,7 +553,7 @@
 
 <footer>
   <div class="wrap">
-    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span data-brand>crowdotcom</span></a>
+    <span data-brand>crowdotcom</span>
     <span>Loyalty programs, client apps and websites · Across Canada, based in Edmonton and St. Albert</span>
   </div>
 </footer>
@@ -978,164 +564,174 @@
   document.querySelectorAll("[data-brand]").forEach(el => { el.textContent = BRAND; });
   document.title = BRAND;
 
-  /* Hero demo ------------------------------------------------------------
-     A loyalty card and its points history. The history is append-only, the
-     way the real one is: Undo adds a correcting line rather than deleting,
-     so the balance is always the sum of the lines. Example data only. */
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Header gains a ground once the sky has scrolled away.
   (function () {
-    const GOAL = 10;
-    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-
-    const stampsEl = document.getElementById("stamps");
-    const rowsEl = document.getElementById("rows");
-    const countEl = document.getElementById("count");
-    const rewardEl = document.getElementById("reward");
-    const awardBtn = document.getElementById("award");
-    const undoBtn = document.getElementById("undo");
-
-    // Example history, oldest first.
-    const ledger = [
-      { when: "Aug 12", what: "Visit", delta: 1 },
-      { when: "Aug 19", what: "Food refill", delta: 1 },
-      { when: "Aug 26", what: "Visit", delta: 1 },
-      { when: "Sep 02", what: "Visit", delta: 1 },
-      { when: "Sep 09", what: "Referral", delta: 2 },
-      { when: "Sep 16", what: "Visit", delta: 1 }
-    ];
-    let lastAward = null;
-
-    const balance = () => ledger.reduce((sum, row) => sum + row.delta, 0);
-    const now = () => new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, m => m.trim().toLowerCase());
-
-    function renderStamps(popIndex) {
-      const n = Math.min(balance(), GOAL);
-      stampsEl.innerHTML = "";
-      for (let i = 0; i < GOAL; i++) {
-        const li = document.createElement("li");
-        if (i < n) { li.className = "on"; li.innerHTML = CHECK; }
-        else { li.textContent = i === GOAL - 1 ? "free" : String(i + 1); }
-        if (i === popIndex) li.classList.add("pop");
-        stampsEl.appendChild(li);
-      }
-      stampsEl.setAttribute("aria-label", "Visit card, " + n + " of " + GOAL + " stamped");
-      countEl.textContent = n;
-
-      const left = GOAL - n;
-      if (left <= 0) {
-        rewardEl.className = "reward ready";
-        rewardEl.innerHTML = "<span>Reward ready to redeem</span><b>10 / 10</b>";
-        awardBtn.textContent = "Redeem reward";
-      } else {
-        rewardEl.className = "reward";
-        rewardEl.innerHTML = "<span>Reward at 10 visits</span><b>" + left + " to go</b>";
-        awardBtn.textContent = "Award a visit";
-      }
-    }
-
-    function renderRows(fresh) {
-      rowsEl.innerHTML = "";
-      let running = 0;
-      const withBalance = ledger.map(row => ({ ...row, bal: (running += row.delta) }));
-      withBalance.slice(-6).reverse().forEach((row, i) => {
-        const li = document.createElement("li");
-        if (fresh && i === 0) li.className = "new";
-        const sign = row.delta > 0 ? "+" + row.delta : "−" + Math.abs(row.delta);
-        li.innerHTML =
-          '<span class="when"></span><span class="what"></span>' +
-          '<span class="delta ' + (row.delta > 0 ? "plus" : "minus") + '">' + sign + '</span>' +
-          '<span class="bal">' + row.bal + '</span>';
-        li.querySelector(".when").textContent = row.when;
-        li.querySelector(".what").textContent = row.what;
-        rowsEl.appendChild(li);
-      });
-    }
-
-    awardBtn.addEventListener("click", () => {
-      const before = balance();
-      if (before >= GOAL) {
-        ledger.push({ when: now(), what: "Reward redeemed", delta: -GOAL });
-        lastAward = null;
-        undoBtn.disabled = true;
-        renderStamps(-1);
-      } else {
-        lastAward = { when: now(), what: "Visit", delta: 1 };
-        ledger.push(lastAward);
-        undoBtn.disabled = false;
-        renderStamps(before);
-      }
-      renderRows(true);
-    });
-
-    undoBtn.addEventListener("click", () => {
-      if (!lastAward) return;
-      ledger.push({ when: now(), what: "Undo, correction", delta: -1 });
-      lastAward = null;
-      undoBtn.disabled = true;
-      renderStamps(-1);
-      renderRows(true);
-    });
-
-    renderStamps(-1);
-    renderRows(false);
+    const bar = document.getElementById("top-bar");
+    const onScroll = () => bar.classList.toggle("scrolled", window.scrollY > 40);
+    onScroll(); addEventListener("scroll", onScroll, { passive: true });
   })();
 
-  /* App recordings ------------------------------------------------------
-     Muted, looping, and only playing while on screen. With reduced motion
-     the poster frame stays as a still, and nothing loads until needed. */
+  /* The sky ----------------------------------------------------------------
+     A noctilucent cloud edge rendered in WebGL: fractal noise shapes the
+     cloud, and a thin band at its edge takes the spectral colour. Drawn at a
+     capped resolution and frame rate, paused off screen and in a hidden tab,
+     and drawn once as a still for reduced motion. Without WebGL the CSS
+     night gradient behind it stands alone. */
+  (function () {
+    const canvas = document.getElementById("sky");
+    const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false, alpha: true });
+    if (!gl) return;
+
+    const vs = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+    const fs = `
+      precision mediump float;
+      uniform vec2 res; uniform float t; uniform float portrait; uniform vec2 band;
+      float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float n(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f*f*(3.0-2.0*f);
+        return mix(mix(h(i), h(i+vec2(1,0)), u.x), mix(h(i+vec2(0,1)), h(i+vec2(1,1)), u.x), u.y); }
+      float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 6; i++){ v += a*n(p); p = p*2.03 + 17.1; a *= 0.5; } return v; }
+      vec3 spectrum(float x){
+        vec3 mint = vec3(0.557,0.933,0.812), ice = vec3(0.525,0.776,1.0), violet = vec3(0.722,0.643,1.0), rose = vec3(0.953,0.659,0.784);
+        x = fract(x) * 4.0;
+        if (x < 1.0) return mix(mint, ice, x);
+        if (x < 2.0) return mix(ice, violet, x-1.0);
+        if (x < 3.0) return mix(violet, rose, x-2.0);
+        return mix(rose, mint, x-3.0);
+      }
+      void main(){
+        vec2 uv = gl_FragCoord.xy / res;
+        float aspect = res.x / res.y;
+        vec2 p = vec2(uv.x * aspect, uv.y);
+        // The cloud lives in a ribbon crossing the upper right (the top on a phone).
+        float along = portrait > 0.5 ? uv.x : uv.x - 0.25;
+        float center = portrait > 0.5 ? band.x - band.y*0.4*along : 0.62 + 0.42*along;
+        float ribbon = exp(-pow((uv.y - center) / (portrait > 0.5 ? band.y : 0.16), 2.0));
+        ribbon *= portrait > 0.5 ? 1.0 : smoothstep(0.18, 0.55, uv.x);
+        vec2 q = p * 2.2 + vec2(t * 0.012, -t * 0.004);
+        float warp = fbm(q * 0.8 + vec2(0.0, t * 0.01));
+        float d = fbm(q + 1.6 * warp) * ribbon;
+        float body = smoothstep(0.30, 0.62, d);
+        float edge = smoothstep(0.22, 0.30, d) * (1.0 - smoothstep(0.30, 0.40, d));
+        vec3 col = vec3(0.0);
+        col += body * vec3(0.78, 0.84, 0.92) * 0.42;
+        col += edge * spectrum(d * 3.2 + uv.x * 0.7 + t * 0.01) * 0.95;
+        float stars = step(0.9985, h(floor(gl_FragCoord.xy / 2.0))) * (1.0 - ribbon) * 0.55;
+        col += stars;
+        float alpha = clamp(max(max(col.r, col.g), col.b), 0.0, 1.0);
+        gl_FragColor = vec4(col / max(alpha, 0.001), alpha);
+      }`;
+
+    const compile = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; };
+    const v = compile(gl.VERTEX_SHADER, vs), f = compile(gl.FRAGMENT_SHADER, fs);
+    if (!v || !f) return;
+    const prog = gl.createProgram(); gl.attachShader(prog, v); gl.attachShader(prog, f); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t"), uPortrait = gl.getUniformLocation(prog, "portrait"), uBand = gl.getUniformLocation(prog, "band");
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    const scale = Math.min(window.devicePixelRatio || 1, 1.25) * 0.75;
+    function size() {
+      const w = Math.round(canvas.clientWidth * scale), hgt = Math.round(canvas.clientHeight * scale);
+      if (canvas.width !== w || canvas.height !== hgt) { canvas.width = w; canvas.height = hgt; gl.viewport(0, 0, w, hgt); }
+      gl.uniform2f(uRes, w, hgt);
+      gl.uniform1f(uPortrait, canvas.clientWidth < canvas.clientHeight * 1.1 ? 1 : 0);
+      // On a phone the copy fills most of the hero, so the cloud keeps to the
+      // clear strip above the headline (measured in pixels, not a fraction).
+      const clear = Math.max(canvas.clientHeight, 1);
+      gl.uniform2f(uBand, 1 - 150 / clear, 60 / clear);
+    }
+    const start = performance.now();
+    function draw(now) {
+      size();
+      gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform1f(uT, still ? 40 : 40 + (now - start) / 1000);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+
+    if (still) { draw(start); addEventListener("resize", () => draw(performance.now())); return; }
+    let visible = true, last = 0, raf = 0;
+    const loop = (now) => { raf = requestAnimationFrame(loop); if (!visible || document.hidden || now - last < 33) return; last = now; draw(now); };
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+    raf = requestAnimationFrame(loop);
+  })();
+
+  /* The observation panel prints a sample client's history, one line at a
+     time, on top of what is already visible. Example data only. */
+  (function () {
+    const log = document.getElementById("log"), total = document.getElementById("total"), next = document.getElementById("next");
+    const events = [["Bag of food", 15], ["Visit", 10], ["Nail trim claimed", -100], ["Prescription refill", 10]];
+    let points = 135, i = 0;
+    const stamp = () => new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?([AP]M)$/i, (m, x) => x.toLowerCase());
+    function add() {
+      const [what, pts] = events[i % events.length]; i++;
+      points += pts;
+      const li = document.createElement("li"); li.className = "fresh";
+      li.innerHTML = '<span class="when"></span><span></span><span class="pts"></span>';
+      li.children[0].textContent = stamp(); li.children[1].textContent = what; li.children[2].textContent = (pts > 0 ? "+" : "−") + Math.abs(pts);
+      log.appendChild(li);
+      while (log.children.length > 3) log.removeChild(log.firstElementChild);
+      total.textContent = points;
+      next.textContent = points >= 150 ? "Enough for $10 off an exam" : points >= 100 ? "A free nail trim is ready to claim" : "Collecting toward a free nail trim";
+    }
+    if (!still) setInterval(() => { if (!document.hidden) add(); }, 4200);
+  })();
+
+  /* Drifting clients: sending a note re-forms the band. */
+  (function () {
+    const status = document.getElementById("drift-status");
+    const count = () => document.querySelectorAll('.client[data-state="dispersing"], .client[data-state="absent"]').length;
+    document.querySelectorAll("[data-bring-back]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const row = btn.closest(".client");
+        const name = row.querySelector("b").textContent;
+        row.dataset.state = "forming";
+        row.querySelector(".word").textContent = "Note sent, forming again";
+        btn.remove();
+        const left = count();
+        status.textContent = `Note sent to the ${name}. ` + (left ? `${left} still drifting.` : "Nobody is drifting.");
+      });
+    });
+  })();
+
+  /* Recordings play only on screen; reduced motion keeps the still frame. */
   (function () {
     const videos = document.querySelectorAll(".demo-video");
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!videos.length || still.matches || !("IntersectionObserver" in window)) return;
+    if (!videos.length || still || !("IntersectionObserver" in window)) return;
     const seen = new IntersectionObserver((entries) => {
       entries.forEach(({ target, isIntersecting }) => {
-        if (isIntersecting) { target.preload = "auto"; target.play().catch(() => {}); }
-        else target.pause();
+        if (isIntersecting) { target.preload = "auto"; target.play().catch(() => {}); } else target.pause();
       });
     }, { threshold: 0.35 });
-    videos.forEach(v => seen.observe(v));
+    videos.forEach((v) => seen.observe(v));
   })();
 
-  /* Contact form ----------------------------------------------------------
-     Posts to Formspree, which forwards to Chris's email, so the address never
-     appears in this page. Until a real form ID is set, the form says so and
-     cannot be sent, so nobody writes a message that goes nowhere. */
+  /* Contact form: posts to Formspree, which forwards to Chris's email, so the
+     address never appears in this page. Off until a real form ID is set. */
   (function () {
     const form = document.getElementById("contact-form");
     const send = document.getElementById("f-send");
     const status = document.getElementById("form-status");
     const connected = !form.action.includes("YOUR_FORM_ID");
-
-    if (!connected) {
-      document.getElementById("form-off").hidden = false;
-      send.disabled = true;
-    }
-
+    if (!connected) { document.getElementById("form-off").hidden = false; send.disabled = true; }
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!connected) return;
-
-      send.disabled = true;
-      send.textContent = "Sending";
-      status.className = "form-note";
-      status.textContent = "";
-
+      send.disabled = true; status.className = "form-note"; status.textContent = "Sending...";
       try {
-        const response = await fetch(form.action, {
-          method: "POST",
-          body: new FormData(form),
-          headers: { Accept: "application/json" }
-        });
+        const response = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
         if (!response.ok) throw new Error("status " + response.status);
-
-        const done = document.createElement("div");
-        done.className = "form-done";
-        done.setAttribute("role", "status");
-        done.innerHTML = "<strong>Message sent.</strong> Thanks, I'll reply to the email you gave.";
+        const done = document.createElement("p");
+        done.className = "form-done"; done.setAttribute("role", "status");
+        done.textContent = "Message sent. Thanks, I'll reply to the email you gave.";
         form.replaceWith(done);
       } catch (error) {
-        send.disabled = false;
-        send.textContent = "Send message";
-        status.className = "form-error";
+        send.disabled = false; status.className = "form-error";
         status.textContent = "That did not go through. Check your connection and try again. What you wrote is still here.";
       }
     });
