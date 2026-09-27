@@ -85,7 +85,7 @@ The page is a clear Alberta night with one iridescent cloud in it. Loyalty is dr
 The ground is night blue, the text is silver, and colour appears only where light would: at an edge. There are no cards, no kickers, no glows. Rows are separated by hairlines, the type is one humanist sans at hairline weight for display, and violet is kept for the single action a visitor is asked to take.
 
 **Key Characteristics:**
-- One WebGL cloud in the hero, capped at 30fps, paused offscreen, a still frame under reduced motion.
+- One WebGL cloud in the hero, a dark silhouette that hides the stars, lit only at its edge, capped at 30fps, paused offscreen, a still frame under reduced motion.
 - The spectrum (mint, ice, violet, rose) appears only as a fringe: the cloud edge, the client edges, the logo mark, the phone frame's hairline.
 - Hairline-ruled rows instead of containers.
 - Hairline display type (weight 200) against a comfortable 400 body.
@@ -104,7 +104,7 @@ The ground is night blue, the text is silver, and colour appears only where ligh
 - **Silver** `#e8ecf2` text, **Mist** `#a8b2c3` secondary text, **Faint** `#7f8a9e` metadata and placeholders (5.4:1 on night).
 - Rules are silver at 12% and 24% alpha.
 
-**The Edge Rule.** Colour lives on edges, never on surfaces. If a colour fills an area larger than a hairline, it is wrong.
+**The Edge Rule.** Colour lives on edges and on the numbers that matter, never on surfaces. Points held are ice, points earned are mint, points waiting or spent are rose. If a colour fills an area larger than a hairline, it is wrong.
 
 **The One Violet Rule.** Violet marks the thing to do next. Two violet things on one screen means one of them is lying.
 
