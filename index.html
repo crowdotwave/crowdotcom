@@ -29,6 +29,7 @@
     </linearGradient>
     <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-out" viewBox="0 0 20 20"><path d="M7 5h8v8M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 20 20"><rect x="4.5" y="9" width="11" height="7.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
     <symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v11M5 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
@@ -72,8 +73,8 @@
     <canvas id="sky" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="hero-copy">
-        <h1 id="hero-title">Loyalty that brings your <em>clients back.</em></h1>
-        <p class="lede">I spot the regulars who are quietly drifting away, and help you bring them back. Built around the software you already use, and run by the person who built it.</p>
+        <h1 id="hero-title">Websites and apps that bring your <em>clients back.</em></h1>
+        <p class="lede">Custom built for your business, with a loyalty program that spots regulars quietly drifting away. <span class="secure"><svg aria-hidden="true"><use href="#i-lock"/></svg>Stored securely in the cloud.</span></p>
         <div class="actions">
           <a class="act primary" href="https://crowdotwave.github.io/nith-valley-app/?demo=client" target="_blank" rel="noopener">Try the live demo <svg aria-hidden="true"><use href="#i-out"/></svg></a>
           <a class="act" href="#contact">Get in touch <svg aria-hidden="true"><use href="#i-down"/></svg></a>
@@ -155,12 +156,12 @@
     <div class="wrap">
       <div class="head">
         <h2 id="fits-title">For businesses where clients come back on a rhythm.</h2>
-        <p>If you can say how often a good client usually comes in, you can see when one stops. These are the businesses where that is easiest to see, and where one kept client pays for the work.</p>
+        <p>See the moment a regular starts slowing down, and catch them before they disappear.</p>
       </div>
       <ul class="offers fits">
         <li class="offer"><h3>Personal trainers<span>Sessions every week</span></h3><p>Clients quit when they cannot see it working. I show them the evidence, and flag the ones whose sessions are thinning out before they cancel.</p></li>
         <li class="offer"><h3>Pet groomers and daycares<span>Every four to eight weeks</span></h3><p>Reminders timed to each dog's own cycle, points at the counter, and a heads-up when a regular goes quiet.</p></li>
-        <li class="offer"><h3>Salons and barbershops<span>Every three to eight weeks</span></h3><p>Each client's own interval, a list of who is overdue, and a note from their stylist instead of one more automated text.</p></li>
+        <li class="offer"><h3>Salons and barbershops<span>Every three to eight weeks</span></h3><p>See who is overdue for their usual cut, and send a personal note from their stylist.</p></li>
         <li class="offer"><h3>Vet clinics<span>Food and medication every month</span></h3><p>Refills ordered from the pet's file, points at the counter, and a reminder before the food runs out. Already built for one clinic, below.</p></li>
       </ul>
     </div>
@@ -238,7 +239,7 @@
       <ul class="offers">
         <li class="offer lead"><h3>Loyalty and retention programs</h3><p>Points, rewards, and a report of who has quietly stopped coming back.</p></li>
         <li class="offer"><h3>Client apps and staff tools</h3><p>An app for your clients and a matching screen for your front desk.</p></li>
-        <li class="offer"><h3>Websites, fixed or rebuilt, then kept running</h3><p>The right address, phone numbers you can tap, and pages that do not break.</p></li>
+        <li class="offer"><h3>Websites, fixed or rebuilt, then kept running</h3></li>
         <li class="offer"><h3>Automating the repetitive work</h3><p>The weekly chore a small tool could do instead.</p></li>
       </ul>
     </div>
@@ -258,10 +259,9 @@
         <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When something cannot be done</span><span class="versus-them" role="cell">An upgrade tier, or silence</span><span class="versus-me" role="cell"><b>A straight answer, and why.</b></span></div>
       </div>
 
-      <!-- [DECIDE] New copy, not in the brief: confirm these three steps match how Chris wants to start. -->
+      <!-- [DECIDE] New copy, not in the brief: confirm these two steps match how Chris wants to start. -->
       <div class="start">
         <div><h3>Tell me the repetitive thing</h3><p>The calls, the spreadsheet, the chore that eats an afternoon.</p></div>
-        <div><h3>I work out how it fits</h3><p>What you already use stays.</p></div>
         <div><h3>You try a working version</h3><p>Something real, changed as you use it, and kept running.</p></div>
       </div>
     </div>
@@ -315,7 +315,9 @@
   /* The sky ----------------------------------------------------------------
      A cloud at night rendered in WebGL: a cumulus bank of rounded billows,
      dark against a pale patch of sky, lined along its top in silver that
-     turns iridescent, and hiding the stars behind it. Drawn at a
+     turns iridescent, and hiding the stars behind it. Stars also keep
+     clear of every line of text and every control, so nothing sparkles
+     between the words. Drawn at a
      capped resolution and frame rate, paused off screen and in a hidden tab,
      and drawn once as a still for reduced motion. Without WebGL the CSS
      night gradient behind it stands alone. */
@@ -330,6 +332,9 @@
       // cloud: where the middle of the cloud's base sits (canvas pixels, y up) and how many pixels
       // one unit of cloud is. One unit is roughly the height of a middling billow.
       uniform vec2 res; uniform float t; uniform vec3 cloud;
+      // keep: boxes the stars stay out of, as centre and half size in canvas pixels. pad: the
+      // soft margin around each one.
+      uniform vec4 keep[KEEP]; uniform float pad;
       float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
       float n(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f*f*(3.0-2.0*f);
         return mix(mix(h(i), h(i+vec2(1,0)), u.x), mix(h(i+vec2(0,1)), h(i+vec2(1,1)), u.x), u.y); }
@@ -379,6 +384,12 @@
         vec2 cell = floor(px / 2.0);
         float s = h(cell);
         float star = step(0.9965, s) * (0.35 + 0.65 * h(cell + 3.1)) * (0.8 + 0.2 * sin(t * 1.3 + s * 60.0));
+        if (star > 0.0) {
+          for (int i = 0; i < KEEP; i++) {
+            vec2 q = abs(px - keep[i].xy) - keep[i].zw;
+            star *= smoothstep(0.0, pad, length(max(q, 0.0)) + min(max(q.x, q.y), 0.0));
+          }
+        }
 
         float d0 = shape(c);
         float cover = 0.0;
@@ -414,7 +425,8 @@
       }`;
 
     const compile = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; };
-    const v = compile(gl.VERTEX_SHADER, vs), f = compile(gl.FRAGMENT_SHADER, fs);
+    const KEEP = 24;
+    const v = compile(gl.VERTEX_SHADER, vs), f = compile(gl.FRAGMENT_SHADER, `#define KEEP ${KEEP}\n` + fs);
     if (!v || !f) return;
     const prog = gl.createProgram(); gl.attachShader(prog, v); gl.attachShader(prog, f); gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
@@ -423,6 +435,8 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t"), uCloud = gl.getUniformLocation(prog, "cloud");
+    const uKeep = gl.getUniformLocation(prog, "keep"), uPad = gl.getUniformLocation(prog, "pad");
+    const keepData = new Float32Array(KEEP * 4);
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const scale = Math.min(window.devicePixelRatio || 1, 1.25) * 0.75;
@@ -446,6 +460,37 @@
       const unit = Math.max(28, Math.min((floor - ceiling) / 1.72, cw * 0.92 / 6));
       const base = floor - Math.max(0, (floor - ceiling - unit * 1.72) / 2);
       gl.uniform3f(uCloud, cw * (wide ? 0.69 : 0.5) * k, (ch - base) * k, unit * k);
+      clear(top, ch, k);
+    }
+    // The boxes the stars stay out of: each line of text on its own (so the sky between short
+    // lines still has stars), and whole boxes for the buttons, the nav and the points panel.
+    // Measured every frame, since the nav stays put while the hero scrolls under it.
+    const textOf = ["#hero-title", ".hero-copy .lede", ".hero-copy .where", ".top .brand", ".nav a:not(.act)"];
+    const boxOf = [".hero-copy .act", ".nav .act", ".observe"];
+    function lines(el) {
+      const r = document.createRange(); r.selectNodeContents(el);
+      const out = [];
+      for (const b of r.getClientRects()) {
+        if (b.width < 1 || b.height < 1) continue;
+        const row = out.find((o) => b.top < o.bottom - 2 && b.bottom > o.top + 2);
+        if (row) { row.left = Math.min(row.left, b.left); row.right = Math.max(row.right, b.right); row.top = Math.min(row.top, b.top); row.bottom = Math.max(row.bottom, b.bottom); }
+        else out.push({ left: b.left, right: b.right, top: b.top, bottom: b.bottom });
+      }
+      return out;
+    }
+    function clear(top, ch, k) {
+      const boxes = [];
+      for (const s of textOf) document.querySelectorAll(s).forEach((el) => boxes.push(...lines(el)));
+      for (const s of boxOf) document.querySelectorAll(s).forEach((el) => boxes.push(el.getBoundingClientRect()));
+      const left = canvas.getBoundingClientRect().left, grow = 12;
+      // Unused slots: an empty box far off canvas. Kept small so a phone's 16-bit floats hold it.
+      for (let i = 0; i < KEEP; i++) keepData.set([-8000, -8000, 0, 0], i * 4);
+      boxes.slice(0, KEEP).forEach((b, i) => {
+        const cx = (b.left + b.right) / 2 - left, cy = (b.top + b.bottom) / 2 - top;
+        keepData.set([cx * k, (ch - cy) * k, ((b.right - b.left) / 2 + grow) * k, ((b.bottom - b.top) / 2 + grow) * k], i * 4);
+      });
+      gl.uniform4fv(uKeep, keepData);
+      gl.uniform1f(uPad, 22 * k);
     }
     const start = performance.now();
     function draw(now) {

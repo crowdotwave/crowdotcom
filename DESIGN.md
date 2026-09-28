@@ -214,7 +214,7 @@ Those edges are also honest charts. Each client's line is their last six months:
 The ground is night blue, the text is silver, and colour appears only where light would: at an edge. There are no cards, no kickers, no glows. Rows are separated by hairlines, the type is one humanist sans at hairline weight for display, and violet is kept for the single action a visitor is asked to take.
 
 **Key Characteristics:**
-- One WebGL cloud in the hero: a cumulus of rounded billows placed in the clear sky above the headline, a dark silhouette against a pale patch of sky that hides the stars, lined in silver that turns iridescent along its top, its billows faintly shaded so it has volume. Capped at 30fps, paused offscreen, a still frame under reduced motion.
+- One WebGL cloud in the hero: a cumulus of rounded billows placed in the clear sky above the headline, a dark silhouette against a pale patch of sky that hides the stars, lined in silver that turns iridescent along its top, its billows faintly shaded so it has volume. Stars keep a soft margin clear of every line of text, button and the points panel, so nothing sparkles between the words. Capped at 30fps, paused offscreen, a still frame under reduced motion.
 - The spectrum (mint, ice, violet, rose) appears only as a fringe: the cloud edge, the client edges, the logo mark, the phone frame's hairline.
 - Client edges are six month timelines of sample data, with big moments (a spend, a milestone, a referral) marked on the line and an owner-only ranking of the best clients underneath.
 - One thread runs the length of the page and draws itself as the visitor scrolls.
@@ -253,7 +253,7 @@ The scale below is what the page uses. It was written down after the fact, so wh
 - **Subtitle**: up to 2rem, for offer names, the fits list and the leaderboard heading.
 - **Lede**: up to 1.3rem at weight 300, the hero's supporting line.
 - **Figures**: 1.6rem for the points total, 1.35rem for leaderboard numbers, both weight 300 and tabular.
-- **Body**: 400 at 1.0625rem, line-height 1.65, measure held near 36rem. Section intros and the lead offer run a step larger at 1.1rem, project text at 1.05rem, the price line at 1.15rem, and the three steps' titles at 1.3rem.
+- **Body**: 400 at 1.0625rem, line-height 1.65, measure held near 36rem. Section intros and the lead offer run a step larger at 1.1rem, project text at 1.05rem, the price line at 1.15rem, and the two steps' titles at 1.3rem.
 - **Small**: .95rem for nav links and the drift note, .92rem for small controls, chips and field labels, .9rem for status lines and footers, .88rem for the detail line under a client, .85rem and .82rem for panel notes and phone captions.
 - **Captions and tags**: .78rem for sample notes and the timeline scale, .75rem for the small caps under a figure, .72rem for the marks on a timeline and the Drifting tag, and .66rem for those marks on a phone, where they have to stay out of the line's way.
 

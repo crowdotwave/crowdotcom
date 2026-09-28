@@ -30,9 +30,10 @@ projects) that a sales conversation would otherwise carry.
 
 ## Positioning
 
-Loyalty that brings clients back: points, rewards, and the reports that show
-who has quietly stopped coming, built for one business and run by the person
-who built it. Not rented from a platform with thousands of customers.
+Websites and apps that bring clients back: custom built for one business, with
+a loyalty program (points, rewards, and the reports that show who has quietly
+stopped coming) and client records stored securely in the cloud, run by the
+person who built it. Not rented from a platform with thousands of customers.
 
 What a vendor cannot truthfully copy:
 - One person builds it and keeps running it. Changes in days, not quarters.
@@ -100,7 +101,8 @@ tools that automate repetitive weekly work.
 ## Product Principles
 
 1. Proof over promises: let visitors try or watch the real thing.
-2. Loyalty is the headline; everything else serves keeping clients coming back.
+2. The websites and apps are what is sold; loyalty is what they are for. Everything
+   serves keeping clients coming back.
 3. Honest status: never imply a client, result or feature that is not real.
 4. Written, low-pressure contact that a busy owner can send at 11pm.
 5. The page must work on a phone before anything else.

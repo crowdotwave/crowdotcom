@@ -117,6 +117,8 @@ p { margin: 0; }
 }
 .hero-copy h1 em { font-style: normal; font-weight: 300; }
 .hero-copy .lede { font-size: clamp(1.08rem, 1rem + .35vw, 1.3rem); color: var(--mist); max-width: 34rem; font-weight: 300; }
+.secure { white-space: nowrap; }
+.secure svg { width: .95em; height: .95em; margin: 0 .3em 0 .1em; vertical-align: -.1em; color: var(--violet); }
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
 .where { font-size: .9rem; color: var(--faint); }
 
@@ -293,6 +295,7 @@ main { position: relative; z-index: 1; }
 @media (max-width: 48rem) { .offer { grid-template-columns: 1fr; } }
 .offer h3 { font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem); font-weight: 250; line-height: 1.12; }
 .offer p { color: var(--mist); font-weight: 300; }
+.offer h3:only-child { grid-column: 1 / -1; }
 .offer.lead h3 { font-size: clamp(2rem, 1.2rem + 3vw, 3.5rem); font-weight: 200; letter-spacing: -.03em; }
 .offer.lead p { color: var(--silver); font-size: 1.1rem; }
 
@@ -311,7 +314,7 @@ main { position: relative; z-index: 1; }
   .versus-them::before { content: "Rented platform: "; color: var(--faint); }
   .versus-me::before { content: "With me: "; color: var(--violet); }
 }
-.start { margin-top: clamp(3rem, 6vw, 4.5rem); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+.start { margin-top: clamp(3rem, 6vw, 4.5rem); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; max-width: 52rem; }
 @media (max-width: 52rem) { .start { grid-template-columns: 1fr; gap: 1.5rem; } }
 .start div { display: grid; gap: .5rem; align-content: start; }
 .start h3 { font-size: 1.3rem; font-weight: 300; }
