@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-27T04:44:05.124801Z",
+  "generatedAt": "2026-09-28T01:51:50.144Z",
   "title": "Design System: crowdotcom",
   "extensions": {
     "colorMeta": {
@@ -87,6 +87,90 @@
           "#f8cadd",
           "#fdeaf2"
         ]
+      },
+      "night-2": {
+        "role": "neutral",
+        "displayName": "Deeper Night",
+        "tonalRamp": [
+          "#05080f",
+          "#0b1222",
+          "#111a2e",
+          "#19243c",
+          "#2a3754",
+          "#4a5670",
+          "#7f8a9e",
+          "#c9d0dc"
+        ]
+      },
+      "dusk": {
+        "role": "neutral",
+        "displayName": "Horizon Dusk",
+        "tonalRamp": [
+          "#070d18",
+          "#0d1628",
+          "#13203a",
+          "#1d2d4d",
+          "#2f4268",
+          "#51658c",
+          "#8b9cbc",
+          "#d0d8e8"
+        ]
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Prairie Mist",
+        "tonalRamp": [
+          "#262b33",
+          "#3d434e",
+          "#565d69",
+          "#737b88",
+          "#8f97a4",
+          "#a8b2c3",
+          "#c7ceda",
+          "#e6eaf0"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint Starlight",
+        "tonalRamp": [
+          "#1d2129",
+          "#30353f",
+          "#454b57",
+          "#5e6573",
+          "#7f8a9e",
+          "#9ba4b5",
+          "#bcc3cf",
+          "#e0e4ea"
+        ]
+      },
+      "violet-deep": {
+        "role": "secondary",
+        "displayName": "Deep Aurora Violet",
+        "tonalRamp": [
+          "#120d26",
+          "#1d1540",
+          "#2a1f55",
+          "#3b2d73",
+          "#544396",
+          "#7563bb",
+          "#9d8fdb",
+          "#d3cbf5"
+        ]
+      },
+      "screen": {
+        "role": "neutral",
+        "displayName": "Phone Screen Black",
+        "tonalRamp": [
+          "#000000",
+          "#0a0a0a",
+          "#141414",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#6b6b6b",
+          "#a3a3a3"
+        ]
       }
     },
     "typographyMeta": {
@@ -98,17 +182,93 @@
         "displayName": "Headline",
         "purpose": "Section headings."
       },
+      "headline-lead-offer": {
+        "displayName": "Headline Lead Offer",
+        "purpose": "The lead offer name in What I build."
+      },
       "title": {
         "displayName": "Title",
-        "purpose": "Project and offer names."
+        "purpose": "Project names in the work section."
+      },
+      "title-contact": {
+        "displayName": "Title Contact",
+        "purpose": "The contact heading."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "Offer and fit names, and the leaderboard heading."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "The hero's supporting line."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "The points total in the observation panel."
+      },
+      "figure-small": {
+        "displayName": "Figure Small",
+        "purpose": "Leaderboard figures."
+      },
+      "step-title": {
+        "displayName": "Step Title",
+        "purpose": "The three steps under How I work."
+      },
+      "price": {
+        "displayName": "Price",
+        "purpose": "The price line."
+      },
+      "body-large": {
+        "displayName": "Body Large",
+        "purpose": "Section intros, the lead offer, the form confirmation."
       },
       "body": {
         "displayName": "Body",
         "purpose": "Running text."
       },
+      "body-project": {
+        "displayName": "Body Project",
+        "purpose": "Project descriptions and the logo name."
+      },
+      "nav": {
+        "displayName": "Nav",
+        "purpose": "Nav links, the drift note, panel headings."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Small buttons, chips, field labels, state words."
+      },
       "small": {
         "displayName": "Small",
-        "purpose": "Status lines, labels, sample notes."
+        "purpose": "Status lines, footers, the points log."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "The detail line under a client or leaderboard name."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "Panel footnotes."
+      },
+      "figcaption": {
+        "displayName": "Figcaption",
+        "purpose": "Captions under the phone recordings."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Sample notes and the timeline scale."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Small caps under a leaderboard figure."
+      },
+      "tag": {
+        "displayName": "Tag",
+        "purpose": "Moment labels on a timeline, the Drifting tag."
+      },
+      "tag-phone": {
+        "displayName": "Tag Phone",
+        "purpose": "Moment labels on a phone."
       }
     },
     "shadows": [
@@ -116,6 +276,11 @@
         "name": "phone-drop",
         "value": "0 40px 70px -40px rgba(0,0,0,.9), 0 16px 28px -22px rgba(0,0,0,.6)",
         "purpose": "Seats the phone recordings on the night. The only shadow on the page."
+      },
+      {
+        "name": "moment-cut",
+        "value": "0 0 0 2px #070b16",
+        "purpose": "A ring in the night colour that lifts a moment dot off its line. A cut, not a glow."
       }
     ],
     "motion": [
@@ -128,6 +293,21 @@
         "name": "cloud-drift",
         "value": "WebGL, 30fps cap, paused offscreen, still frame under reduced motion",
         "purpose": "The one authored moment."
+      },
+      {
+        "name": "forming-dash",
+        "value": "stroke-dasharray 2 5, stroke-dashoffset to -28 over 2.4s linear, infinite",
+        "purpose": "A new client, or one just sent a note: the fringe still forming. Off under reduced motion."
+      },
+      {
+        "name": "thread-draw",
+        "value": "Scroll driven; the head sits two thirds down the viewport and reaches the end at the bottom of the page",
+        "purpose": "The thread drawing itself as the page is read. Drawn whole under reduced motion."
+      },
+      {
+        "name": "panel-tick",
+        "value": "One new points line every 4.2s while visible",
+        "purpose": "The observation panel printing a sample history."
       }
     ],
     "breakpoints": [
@@ -175,27 +355,53 @@
       "css": ".ds-field{display:grid;gap:.45rem;color:#a8b2c3;font:400 .92rem Commissioner,system-ui,sans-serif}.ds-input{font:400 1.0625rem Commissioner,system-ui,sans-serif;color:#e8ecf2;background:transparent;border:0;border-bottom:1px solid rgba(232,236,242,.24);padding:.6rem 0 .7rem;transition:border-color .3s}.ds-input::placeholder{color:#7f8a9e}.ds-input:focus{outline:none;border-bottom-color:#b8a4ff}"
     },
     {
-      "name": "Client Edge",
-      "kind": "custom",
-      "refersTo": "who-is-drifting",
-      "description": "A sample client drawn as an edge of light; the fringe breaks apart as they drift.",
-      "html": "<svg class=\"ds-edge\" viewBox=\"0 0 400 44\"><defs><linearGradient id=\"ds-s\"><stop offset=\"0\" stop-color=\"#8eeecf\"/><stop offset=\".35\" stop-color=\"#86c6ff\"/><stop offset=\".65\" stop-color=\"#b8a4ff\"/><stop offset=\"1\" stop-color=\"#f3a8c8\"/></linearGradient></defs><path class=\"ds-body\" d=\"M4 26 C100 14 200 34 396 22\"/><path class=\"ds-fringe\" d=\"M4 22 C100 10 200 30 396 18\" stroke=\"url(#ds-s)\"/></svg>",
-      "css": ".ds-edge{width:100%;height:44px;background:#070b16}.ds-edge path{fill:none;stroke-linecap:round}.ds-body{stroke:rgba(232,236,242,.16);stroke-width:10}.ds-fringe{stroke-width:2.4}"
-    },
-    {
       "name": "Header Nav",
       "kind": "nav",
       "description": "Fixed header, links in mist, contact as a quiet pill.",
       "html": "<nav class=\"ds-nav\"><a href=\"#\">Loyalty</a><a href=\"#\">Work</a><a href=\"#\">How I work</a></nav>",
       "css": ".ds-nav{display:flex;gap:1.75rem;background:#070b16;padding:1rem}.ds-nav a{font:400 .95rem Commissioner,system-ui,sans-serif;color:#a8b2c3;text-decoration:none}.ds-nav a:hover{color:#e8ecf2}.ds-nav a:focus-visible{outline:1.5px solid #b8a4ff;outline-offset:4px}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Business picker and leaderboard sort. Selected is silver, never violet.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\">Vet clinic</button><button class=\"ds-chip\" aria-pressed=\"false\">Gym or studio</button><button class=\"ds-chip\" aria-pressed=\"false\">Groomer</button></div>",
+      "css": ".ds-chips{display:flex;gap:.5rem;flex-wrap:wrap;background:#070b16;padding:1rem}.ds-chip{font:400 .92rem Commissioner,Segoe UI,system-ui,sans-serif;min-height:2.5rem;padding:.45rem 1rem;border-radius:999px;border:1px solid rgba(232,236,242,.24);background:transparent;color:#a8b2c3;cursor:pointer;transition:border-color .2s,color .2s,background-color .2s}.ds-chip:hover{border-color:#e8ecf2;color:#e8ecf2}.ds-chip:focus-visible{outline:1.5px solid #b8a4ff;outline-offset:3px}.ds-chip[aria-pressed=\"true\"]{border-color:#e8ecf2;color:#e8ecf2;background:rgba(232,236,242,.08)}"
+    },
+    {
+      "name": "Client Timeline",
+      "kind": "custom",
+      "refersTo": "who-is-drifting",
+      "description": "Six months of one client: height is rhythm kept, bumps are visits, the fringe thins and breaks where they stopped, a dot marks a big moment.",
+      "html": "<div class=\"ds-tl\"><svg viewBox=\"0 0 400 44\" preserveAspectRatio=\"none\"><defs><linearGradient id=\"ds-t\" gradientUnits=\"userSpaceOnUse\" x1=\"4\" x2=\"396\"><stop offset=\"0\" stop-color=\"#8eeecf\"/><stop offset=\".35\" stop-color=\"#86c6ff\"/><stop offset=\".65\" stop-color=\"#b8a4ff\"/><stop offset=\"1\" stop-color=\"#f3a8c8\"/></linearGradient></defs><path class=\"ds-tl-body\" d=\"M4 16 C60 15 120 17 180 16 S260 15 290 17 C320 20 350 28 396 32\"/><g transform=\"translate(0 -3)\"><path class=\"ds-tl-on\" stroke=\"url(#ds-t)\" d=\"M4 16 C60 15 120 17 180 16 S260 15 290 17\"/><path class=\"ds-tl-thin\" stroke=\"url(#ds-t)\" d=\"M290 17 C320 20 340 25 355 28\"/><path class=\"ds-tl-faint\" stroke=\"url(#ds-t)\" d=\"M355 28 C370 30 385 31 396 32\"/></g></svg><span class=\"ds-tl-mark\" style=\"left:30%;top:13px\"><i></i><b>$380 surgery</b></span></div>",
+      "css": ".ds-tl{position:relative;height:44px;background:#070b16;padding:1.4rem 0 .4rem}.ds-tl svg{display:block;width:100%;height:44px;overflow:visible}.ds-tl path{fill:none;stroke-linecap:round}.ds-tl-body{stroke:rgba(232,236,242,.15);stroke-width:9}.ds-tl-on{stroke-width:2.4}.ds-tl-thin{stroke-width:2;opacity:.5;stroke-dasharray:1 7}.ds-tl-faint{stroke-width:2;opacity:.18;stroke-dasharray:1 14}.ds-tl-mark{position:absolute;margin-top:1.4rem}.ds-tl-mark i{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:#e8ecf2;box-shadow:0 0 0 2px #070b16}.ds-tl-mark b{position:absolute;left:0;bottom:8px;transform:translateX(-50%);white-space:nowrap;font:400 .72rem Commissioner,Segoe UI,system-ui,sans-serif;color:#e8ecf2}"
+    },
+    {
+      "name": "Best Clients Row",
+      "kind": "custom",
+      "refersTo": "your-best-clients",
+      "description": "One row of the owner's ranking. A drifting client carries the rose tag.",
+      "html": "<ol class=\"ds-best\"><li><span class=\"ds-best-rank\">1</span><span class=\"ds-best-who\"><b>Alex R.</b><em>Drifting</em><span>With you 2 years \u00b7 kept their rhythm 74% of the time</span></span><span class=\"ds-best-fig\"><b>$2,640</b><span>this year</span></span></li></ol>",
+      "css": ".ds-best{list-style:none;margin:0;padding:0 1rem;background:#070b16;border-top:1px solid rgba(232,236,242,.12);font-family:Commissioner,Segoe UI,system-ui,sans-serif;color:#e8ecf2}.ds-best li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(232,236,242,.12)}.ds-best-rank{color:#e8ecf2}.ds-best-who{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .6rem}.ds-best-who b{font-weight:500}.ds-best-who em{font-style:normal;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#f3a8c8;border:1px solid rgba(243,168,200,.45);border-radius:999px;padding:.05rem .5rem}.ds-best-who>span{flex-basis:100%;font-size:.88rem;color:#7f8a9e}.ds-best-fig{display:grid;justify-items:end}.ds-best-fig b{font-weight:300;font-size:1.35rem;font-variant-numeric:tabular-nums}.ds-best-fig span{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:#7f8a9e}"
+    },
+    {
+      "name": "Offer Row",
+      "kind": "custom",
+      "refersTo": "offer-rows",
+      "description": "A hairline row: name on the left, what it does on the right. The fits variant adds the rhythm under the name.",
+      "html": "<ul class=\"ds-offers\"><li><h3>Pet groomers and daycares<span>Every four to eight weeks</span></h3><p>Reminders timed to each dog's own cycle, points at the counter, and a heads-up when a regular goes quiet.</p></li></ul>",
+      "css": ".ds-offers{list-style:none;margin:0;padding:0 1rem;background:#070b16;border-top:1px solid rgba(232,236,242,.12);font-family:Commissioner,Segoe UI,system-ui,sans-serif}.ds-offers li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:1rem 3rem;padding:1.6rem 0;border-bottom:1px solid rgba(232,236,242,.12);align-items:baseline}.ds-offers h3{margin:0;font-weight:250;font-size:clamp(1.4rem,1.1rem + 1.1vw,2rem);line-height:1.12;letter-spacing:-.02em;color:#e8ecf2}.ds-offers h3 span{display:block;margin-top:.45rem;font-size:.9rem;font-weight:400;letter-spacing:0;color:#7f8a9e}.ds-offers p{margin:0;color:#a8b2c3;font-weight:300}"
     }
   ],
   "narrative": {
     "northStar": "Noctilucent prairie night",
-    "overview": "The page is a clear Alberta night with one iridescent cloud in it. Loyalty is drawn as light at that cloud's edge: a regular client is a vivid fringe, a new one is still forming, a client who has quietly stopped coming is a fringe breaking apart. Everything else stays out of the way so that edge of light is the only spectacle.\n\nThe ground is night blue, the text is silver, and colour appears only where light would: at an edge. There are no cards, no kickers, no glows. Rows are separated by hairlines, the type is one humanist sans at hairline weight for display, and violet is kept for the single action a visitor is asked to take.",
+    "overview": "The page is a clear Alberta night with one iridescent cloud in it. Loyalty is drawn as light at that cloud's edge: a regular client is a vivid fringe, a new one is still forming, a client who has quietly stopped coming is a fringe breaking apart. Everything else stays out of the way so that edge of light is the only spectacle.\n\nThose edges are also honest charts. Each client's line is their last six months: how high it rides is how closely they keep their own rhythm, each bump is a visit, and where it thins and breaks is where they stopped coming. The idea underneath the whole page is consistency, and the lines are where a visitor sees it.\n\nThe ground is night blue, the text is silver, and colour appears only where light would: at an edge. There are no cards, no kickers, no glows. Rows are separated by hairlines, the type is one humanist sans at hairline weight for display, and violet is kept for the single action a visitor is asked to take.",
     "keyCharacteristics": [
-      "One WebGL cloud in the hero, a dark silhouette that hides the stars, lit only at its edge, capped at 30fps, paused offscreen, a still frame under reduced motion.",
+      "One WebGL cloud in the hero: a cumulus of rounded billows placed in the clear sky above the headline, a dark silhouette against a pale patch of sky that hides the stars, lined in silver that turns iridescent along its top, its billows faintly shaded so it has volume. Capped at 30fps, paused offscreen, a still frame under reduced motion.",
       "The spectrum (mint, ice, violet, rose) appears only as a fringe: the cloud edge, the client edges, the logo mark, the phone frame's hairline.",
+      "Client edges are six month timelines of sample data, with big moments (a spend, a milestone, a referral) marked on the line and an owner-only ranking of the best clients underneath.",
+      "One thread runs the length of the page and draws itself as the visitor scrolls.",
       "Hairline-ruled rows instead of containers.",
       "Hairline display type (weight 200) against a comfortable 400 body."
     ],
@@ -217,7 +423,7 @@
       },
       {
         "name": "The No Glow Rule",
-        "body": "No coloured shadows, no zero-offset halos. Light in this world comes from the cloud, not from UI.",
+        "body": "No coloured shadows, no zero-offset halos. Light in this world comes from the cloud and the pale patch of sky that lines it, never from UI. A moment dot on a timeline is ringed in the night colour to lift it off the line; that ring is a cut, not a glow.",
         "section": "elevation"
       }
     ],
@@ -225,14 +431,18 @@
       "Do put colour only on edges: the cloud, client fringes, the logo, hairlines.",
       "Do keep one violet action per view.",
       "Do label every piece of example data as a sample.",
-      "Do give recordings a poster and pause them offscreen."
+      "Do give recordings a poster and pause them offscreen.",
+      "Do make every shape on a client line mean something: height is rhythm kept, bumps are visits, dots are moments, the fringe is continuity. Nothing on a line is decoration.",
+      "Do make sample figures agree with each other: the words beside a line, the line itself and the ranking below describe the same client."
     ],
     "donts": [
       "Don't use cards, kickers, eyebrows or section numbers.",
       "Don't use coloured or glowing shadows.",
       "Don't use gradient text or bold headings.",
       "Don't use em dashes anywhere.",
-      "Don't invent numbers, testimonials, prices or clients."
+      "Don't invent numbers, testimonials, prices or clients.",
+      "Don't let a line rise or fall for looks. A slope is a claim about a client, and an unexplained one reads as something having happened.",
+      "Don't use violet for a selected chip."
     ]
   }
 }

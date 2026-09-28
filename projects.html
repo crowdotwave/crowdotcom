@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Projects · crowdotcom</title>
+<meta name="description" content="Apps and websites built for small businesses: a vet clinic's client app, a personal trainer's progression app, and a memorial studio's website.">
+<meta name="theme-color" content="#070b16">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="spectrum" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#8eeecf"/>
+      <stop offset=".35" stop-color="#86c6ff"/>
+      <stop offset=".65" stop-color="#b8a4ff"/>
+      <stop offset="1" stop-color="#f3a8c8"/>
+    </linearGradient>
+    <!-- The timeline lines take the spectrum across the whole six months rather than across their
+         own drawn extent: a flat line has no height to spread a gradient over and would vanish,
+         and pinned to the timeline the colour itself reads as time, mint long ago, rose now. -->
+    <linearGradient id="spectrum-line" gradientUnits="userSpaceOnUse" x1="4" x2="396" y1="0" y2="0">
+      <stop offset="0" stop-color="#8eeecf"/>
+      <stop offset=".35" stop-color="#86c6ff"/>
+      <stop offset=".65" stop-color="#b8a4ff"/>
+      <stop offset="1" stop-color="#f3a8c8"/>
+    </linearGradient>
+    <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-out" viewBox="0 0 20 20"><path d="M7 5h8v8M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v11M5 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+
+<header class="top" id="top-bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 26 16" aria-hidden="true"><path d="M2 12c4-7 9-9 13-7s6 6 9 1" fill="none" stroke="url(#spectrum)" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span data-brand>crowdotcom</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="index.html#drifting">Loyalty</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="index.html#how">How I work</a>
+      <a class="act small" href="index.html#contact">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="band" aria-labelledby="projects-title">
+    <div class="wrap">
+      <div class="head">
+        <h1 id="projects-title">Projects</h1>
+        <p>Apps and websites I have built for small businesses. The demos run on invented sample data.</p>
+      </div>
+
+      <article class="project">
+        <div class="project-text">
+          <span class="status"><svg viewBox="0 0 28 10" aria-hidden="true"><path d="M1 7c6-6 12 2 18-3s7 1 8 0" fill="none" stroke="#f3a8c8" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Built and working, not yet in use</span>
+          <h3>Nith Valley Animal Hospital</h3>
+          <p>A client app and front desk console for a vet clinic in New Hamburg, Ontario, built alongside its existing practice software.</p>
+          <ul class="facts">
+            <li>Clients order food and medication refills from their pet's file, and see when it is ready, without phoning.</li>
+            <li>The app tells clients before food or a prescription runs out.</li>
+            <li>Points are awarded at the counter with one tap.</li>
+          </ul>
+          <div class="try">
+            <a class="act small primary" href="https://crowdotwave.github.io/nith-valley-app/?demo=client" target="_blank" rel="noopener">Try it as a pet owner <svg aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="act small" href="https://crowdotwave.github.io/nith-valley-app/?demo=staff" target="_blank" rel="noopener">As the front desk <svg aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
+          <p class="sample">The live demo runs on invented sample data.</p>
+        </div>
+        <div class="project-media">
+          <figure class="phone">
+            <div class="phone-frame">
+              <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/nith-demo-poster.jpg"
+                     aria-label="Recording of the clinic app: a client orders a refill of their dog's medication, the front desk reviews, approves and marks it ready, and the client sees it is ready for pickup.">
+                <source src="assets/work/nith-demo.mp4" type="video/mp4">
+                <source src="assets/work/nith-demo.webm" type="video/webm">
+              </video>
+            </div>
+            <figcaption>A refill, from the client's phone to the front desk and back</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <article class="project flip">
+        <div class="project-text">
+          <span class="status"><svg viewBox="0 0 28 10" aria-hidden="true"><path d="M1 7c6-6 12 2 18-3s7 1 8 0" fill="none" stroke="url(#spectrum)" stroke-width="1.8" stroke-linecap="round"/></svg>In use</span>
+          <h3>A personal trainer</h3>
+          <p>An app for tracking progression. Clients log every set on their phone, and both they and their trainer watch each lift climb.</p>
+          <ul class="facts">
+            <li>Progressive overload you can see: every set, record and trend on one chart.</li>
+            <li>Works with no signal, and catches up later.</li>
+          </ul>
+        </div>
+        <div class="project-media">
+          <figure class="phone">
+            <div class="phone-frame">
+              <video class="demo-video" muted loop playsinline preload="none" poster="assets/work/ptc-demo-poster.jpg"
+                     aria-label="Recording of the workout app: a client picks the day's workout, logs two bench press sets, sets a personal record, then opens their progress charts and finds the new record on the bench press estimated one rep max.">
+                <source src="assets/work/ptc-demo.mp4" type="video/mp4">
+                <source src="assets/work/ptc-demo.webm" type="video/webm">
+              </video>
+            </div>
+            <figcaption>A personal record, logged mid-workout</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-text">
+          <span class="status">Website</span>
+          <h3>A memorial resin artist</h3>
+          <p>A website for a memorial resin studio: a gallery, a memorial wall, and grief support resources.</p>
+          <ul class="facts">
+            <li>Written so the owner can add photos and memorials without a developer.</li>
+          </ul>
+          <div class="try">
+            <a class="act small" href="https://crowdotwave.github.io/everdeencrafts/" target="_blank" rel="noopener">Visit the site <svg aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
+        </div>
+        <div class="project-media">
+          <figure class="phone">
+            <div class="phone-frame">
+              <img src="assets/work/everdeen-home.jpg" width="584" height="1264" loading="lazy"
+                   alt="The studio's home page on a phone: its name over a dark green forest at night, with buttons for the work and the memorial wall.">
+            </div>
+            <figcaption>The studio's home page</figcaption>
+          </figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span data-brand>crowdotcom</span>
+    <span>Loyalty programs, client apps and websites · Across Canada, based in Edmonton and St. Albert</span>
+  </div>
+</footer>
+
+<script>
+  // The business name, set once on the home page and repeated here.
+  const BRAND = "crowdotcom";
+  document.querySelectorAll("[data-brand]").forEach(el => { el.textContent = BRAND; });
+  document.title = "Projects · " + BRAND;
+
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Header gains a ground once the page has scrolled.
+  (function () {
+    const bar = document.getElementById("top-bar");
+    const onScroll = () => bar.classList.toggle("scrolled", window.scrollY > 40);
+    onScroll(); addEventListener("scroll", onScroll, { passive: true });
+  })();
+
+  /* Recordings play only on screen; reduced motion keeps the still frame. */
+  (function () {
+    const videos = document.querySelectorAll(".demo-video");
+    if (!videos.length || still || !("IntersectionObserver" in window)) return;
+    const seen = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        if (isIntersecting) { target.preload = "auto"; target.play().catch(() => {}); } else target.pause();
+      });
+    }, { threshold: 0.35 });
+    videos.forEach((v) => seen.observe(v));
+  })();
+</script>
+</body>
+</html>

@@ -56,18 +56,18 @@ tools that automate repetitive weekly work.
 
 ## Capabilities and Constraints
 
-- One static `index.html`, no build step, no framework, hosted on GitHub Pages.
-  Must open straight from disk. Supporting files live under `assets/`.
+- Static pages (`index.html` and `projects.html`) sharing `assets/site.css`, no
+  build step, no framework, hosted on GitHub Pages. Must open straight from disk.
+  Supporting files live under `assets/`.
 - Fonts and media are self-hosted; the only outside request may be the form
   submission.
 - Contact form posts to `https://formspree.io/f/YOUR_FORM_ID` until Chris
-  supplies the real id; until then it says plainly it is not connected and
-  cannot be sent. Chris's email address never appears in the page.
+  supplies the real id; until then the send button is off. Chris's email address never appears in the page.
 - The business name is undecided. `crowdotcom` is a placeholder, set in one
   place (the `BRAND` constant) so it can be swapped.
 - Undecided, so never stated: prices (say only "Every project is quoted for
-  the business"), what a client owns if the work ends, the About paragraph
-  beyond its first line.
+  the business"), what a client owns if the work ends. There is no About
+  section; the page speaks in the first person throughout.
 - Placeholders are obvious and findable by searching for `[DECIDE]`.
 
 ## Brand Commitments
