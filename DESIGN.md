@@ -13,6 +13,7 @@ colors:
   rose: "#f3a8c8"
   violet: "#b8a4ff"
   violet-deep: "#2a1f55"
+  screen: "#000000"
 typography:
   display:
     fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
@@ -26,17 +27,95 @@ typography:
     fontWeight: 200
     lineHeight: 1.04
     letterSpacing: "-0.03em"
+  headline-lead-offer:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 1.2rem + 3vw, 3.5rem)"
+    fontWeight: 250
+    lineHeight: 1.08
+    letterSpacing: "-0.025em"
+  headline-about:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 1.3rem + 2.6vw, 3.2rem)"
+    fontWeight: 200
+    lineHeight: 1.1
+    letterSpacing: "-0.025em"
   title:
     fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
     fontSize: "clamp(1.7rem, 1.2rem + 1.8vw, 2.6rem)"
     fontWeight: 250
     lineHeight: 1.08
     letterSpacing: "-0.025em"
+  title-contact:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(1.7rem, 1.2rem + 1.8vw, 2.5rem)"
+    fontWeight: 250
+    lineHeight: 1.1
+    letterSpacing: "-0.025em"
+  subtitle:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(1.4rem, 1.1rem + 1.1vw, 2rem)"
+    fontWeight: 250
+    lineHeight: 1.12
+    letterSpacing: "-0.02em"
+  lede:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(1.08rem, 1rem + .35vw, 1.3rem)"
+    fontWeight: 300
+    lineHeight: 1.55
+    letterSpacing: "normal"
+  figure:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.6rem"
+    fontWeight: 300
+    lineHeight: 1.1
+    letterSpacing: "normal"
+  figure-small:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.35rem"
+    fontWeight: 300
+    lineHeight: 1.1
+    letterSpacing: "normal"
+  step-title:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.3rem"
+    fontWeight: 300
+    lineHeight: 1.2
+    letterSpacing: "normal"
+  price:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.15rem"
+    fontWeight: 300
+    lineHeight: 1.5
+    letterSpacing: "normal"
+  body-large:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.1rem"
+    fontWeight: 300
+    lineHeight: 1.6
+    letterSpacing: "normal"
   body:
     fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
     fontSize: "1.0625rem"
     fontWeight: 400
     lineHeight: 1.65
+    letterSpacing: "normal"
+  body-project:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.05rem"
+    fontWeight: 300
+    lineHeight: 1.6
+    letterSpacing: "normal"
+  nav:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".95rem"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "normal"
+  control:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".92rem"
+    fontWeight: 400
+    lineHeight: 1.4
     letterSpacing: "normal"
   small:
     fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
@@ -44,10 +123,54 @@ typography:
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: "normal"
+  meta:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".88rem"
+    fontWeight: 400
+    lineHeight: 1.45
+    letterSpacing: "normal"
+  note:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".85rem"
+    fontWeight: 400
+    lineHeight: 1.45
+    letterSpacing: "normal"
+  figcaption:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".82rem"
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: "normal"
+  caption:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".78rem"
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: ".02em"
+  micro:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".75rem"
+    fontWeight: 400
+    lineHeight: 1.3
+    letterSpacing: ".06em"
+  tag:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".72rem"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: ".06em"
+  tag-phone:
+    fontFamily: "Commissioner, Segoe UI, system-ui, sans-serif"
+    fontSize: ".66rem"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "normal"
 rounded:
   control: "999px"
   focus: "3px"
   phone: "2.1rem"
+  phone-screen: "1.7rem"
+  scrollbar: "10px"
 spacing:
   gutter: "clamp(1rem, 4.5vw, 3rem)"
   row: "1.4rem"
@@ -101,6 +224,7 @@ The ground is night blue, the text is silver, and colour appears only where ligh
 
 ### Neutral
 - **Night** `#070b16` page ground, **Night 2** `#0b1222`, **Dusk** `#13203a` for the bottom of the hero sky.
+- **Screen** `#000000` only behind the phone recordings, where a real phone screen is black, and in the mask that draws the phone frame's spectrum edge.
 - **Silver** `#e8ecf2` text, **Mist** `#a8b2c3` secondary text, **Faint** `#7f8a9e` metadata and placeholders (5.4:1 on night).
 - Rules are silver at 12% and 24% alpha.
 
@@ -113,11 +237,17 @@ The ground is night blue, the text is silver, and colour appears only where ligh
 Commissioner, self-hosted as a variable woff2 (100 to 900), is the only face.
 
 ### Hierarchy
+The scale below is what the page uses. It was written down after the fact, so where this document and the page ever disagree, the page is right and this section gets updated.
+
 - **Display** (h1): 200 weight, up to 5.9rem, line-height .98, tracking -0.035em. The emphasised phrase steps up to 300, never italic, never gradient.
-- **Headline** (section h2): 200 weight, up to 3.6rem.
-- **Title** (project h3): 250 weight, up to 2.6rem.
-- **Body**: 400 at 1.0625rem, line-height 1.65, measure held near 36rem.
-- **Small**: .9rem for status lines, labels and sample notes.
+- **Headline** (section h2): 200 weight, up to 3.6rem. Two close variants: the lead offer at up to 3.5rem, and the About heading at up to 3.2rem.
+- **Title** (project h3): 250 weight, up to 2.6rem; the contact heading at up to 2.5rem.
+- **Subtitle**: up to 2rem, for offer names, the fits list and the leaderboard heading.
+- **Lede**: up to 1.3rem at weight 300, the hero's supporting line.
+- **Figures**: 1.6rem for the points total, 1.35rem for leaderboard numbers, both weight 300 and tabular.
+- **Body**: 400 at 1.0625rem, line-height 1.65, measure held near 36rem. Section intros and the lead offer run a step larger at 1.1rem, project text at 1.05rem, the price line at 1.15rem, and the three steps' titles at 1.3rem.
+- **Small**: .95rem for nav links and the drift note, .92rem for small controls, chips and field labels, .9rem for status lines and footers, .88rem for the detail line under a client, .85rem and .82rem for panel notes and phone captions.
+- **Captions and tags**: .78rem for sample notes and the timeline scale, .75rem for the small caps under a figure, .72rem for the marks on a timeline and the Drifting tag, and .66rem for those marks on a phone, where they have to stay out of the line's way.
 
 **The Hairline Rule.** Size carries hierarchy, weight stays light. Headings never go bold.
 
@@ -133,7 +263,7 @@ The page is flat. The only shadow is under the phone recordings, a neutral black
 
 ## Shapes
 
-Controls are full pills. Phone frames are rounded rectangles with a 1px spectrum hairline. Everything else is square, separated by hairlines.
+Controls are full pills. Phone frames are rounded rectangles (2.1rem, with the screen inside at 1.7rem) with a 1px spectrum hairline. The scrollbar thumb rounds at 10px. Everything else is square, separated by hairlines.
 
 ## Components
 
