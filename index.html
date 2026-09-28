@@ -191,7 +191,6 @@
   .client[data-state="absent"] .fringe { opacity: .1; stroke-dasharray: 1 16; }
   .client[data-state="absent"] .body { opacity: .2; }
   @keyframes form { to { stroke-dashoffset: -28; } }
-
   /* The thread: one client edge drawn the length of the page. It runs down the gutter beside
      each section and swings out across the gap before the next heading, drawing itself as the
      page scrolls so its head stays a little ahead of the reader, still forming. It sits under
@@ -204,11 +203,48 @@
   .thread .fringe { stroke-width: 2.4; }
   .thread .forming { stroke-width: 2.4; opacity: .9; stroke-dasharray: 2 5; animation: form 2.4s linear infinite; }
   @media (prefers-reduced-motion: reduce) { .thread .forming { display: none; } }
+  .edge .t-body { stroke: rgba(232, 236, 242, .15); stroke-width: 9; }
+  .edge .t-on { stroke-width: 2.4; }
+  .edge .t-thin { stroke-width: 2; opacity: .5; stroke-dasharray: 1 7; }
+  .edge .t-faint { stroke-width: 2; opacity: .18; stroke-dasharray: 1 14; }
+  .client[data-state="forming"] .t-on { stroke-dasharray: 2 5; animation: form 2.4s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .client .t-on { animation: none !important; } }
+  .client.key { padding: .55rem 0 0; border-bottom: 0; }
+  .client.key .axis { display: flex; justify-content: space-between; font-size: .78rem; letter-spacing: .04em; color: var(--faint); }
+  @media (max-width: 44rem) { .client.key > span { display: none; } .client.key .axis { grid-column: 1 / -1; grid-row: 1; } }
+  .edge { position: relative; }
+  .edge-line { display: block; width: 100%; height: 100%; overflow: visible; }
+  .mark { position: absolute; width: 0; height: 0; }
+  .mark i { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--silver); box-shadow: 0 0 0 2px var(--night); }
+  .mark-label { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); white-space: nowrap; font-size: .72rem; line-height: 1; color: var(--silver); letter-spacing: .01em; }
+  @media (max-width: 44rem) { .mark-label { font-size: .66rem; } }
+  .best { margin-top: clamp(2.5rem, 6vw, 4rem); display: grid; gap: 1.1rem; }
+  .best-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem 2rem; }
+  .best-head h3 { font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem); font-weight: 250; line-height: 1.1; }
+  .best-head p { color: var(--mist); max-width: 34rem; margin-top: .4rem; }
+  .best-sorts { display: flex; gap: .5rem; }
+  .best-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .best-list li { display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+  .best-rank { color: var(--faint); font-variant-numeric: tabular-nums; }
+  .best-list li:first-child .best-rank { color: var(--silver); }
+  .best-who { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .6rem; min-width: 0; }
+  .best-who b { font-weight: 500; }
+  .best-who em { font-style: normal; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--rose); border: 1px solid rgba(243, 168, 200, .45); border-radius: 999px; padding: .05rem .5rem; }
+  .best-who > span { flex-basis: 100%; font-size: .88rem; color: var(--faint); }
+  .best-figure { display: grid; justify-items: end; text-align: right; }
+  .best-figure b { font-weight: 300; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .best-figure span { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
   .client-state { display: flex; flex-direction: column; align-items: flex-end; gap: .45rem; text-align: right; }
   @media (max-width: 44rem) { .client-state { grid-column: 2; grid-row: 1; } }
   .client-state .word { font-size: .92rem; color: var(--mist); }
   .client[data-state="vivid"] .word { color: var(--silver); }
   .client[data-state="dispersing"] .word, .client[data-state="absent"] .word { color: var(--rose); }
+  .kinds { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-bottom: 1.2rem; }
+  .kinds .sample { margin-right: .3rem; }
+  .kind { min-height: 2.5rem; padding: .45rem 1rem; border-radius: 999px; border: 1px solid var(--rule-strong); background: transparent; color: var(--mist); font: inherit; font-size: .92rem; cursor: pointer; transition: border-color .2s, color .2s, background-color .2s; }
+  .kind:hover { border-color: var(--silver); color: var(--silver); }
+  .kind[aria-pressed="true"] { border-color: var(--silver); color: var(--silver); background: rgba(232, 236, 242, .08); }
+  .fits .offer h3 span { display: block; margin-top: .45rem; font-size: .9rem; font-weight: 400; letter-spacing: 0; color: var(--faint); }
   .drift-note { margin-top: 1.4rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .75rem 2rem; color: var(--mist); font-size: .95rem; }
   .drift-note output { color: var(--silver); }
 
@@ -224,6 +260,7 @@
   }
   .project:first-of-type { border-top: 0; padding-top: 0; }
   .project.flip .project-media { order: -1; }
+  .project.solo { grid-template-columns: 1fr; }
   @media (max-width: 54rem) { .project { grid-template-columns: 1fr; } .project.flip .project-media { order: 0; } }
   .project-text { display: flex; flex-direction: column; gap: 1.1rem; }
   .project h3 { font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.6rem); line-height: 1.08; font-weight: 250; letter-spacing: -.025em; }
@@ -339,11 +376,21 @@
       <stop offset=".65" stop-color="#b8a4ff"/>
       <stop offset="1" stop-color="#f3a8c8"/>
     </linearGradient>
+    <!-- The timeline lines take the spectrum across the whole six months rather than across their
+         own drawn extent: a flat line has no height to spread a gradient over and would vanish,
+         and pinned to the timeline the colour itself reads as time, mint long ago, rose now. -->
+    <linearGradient id="spectrum-line" gradientUnits="userSpaceOnUse" x1="4" x2="396" y1="0" y2="0">
+      <stop offset="0" stop-color="#8eeecf"/>
+      <stop offset=".35" stop-color="#86c6ff"/>
+      <stop offset=".65" stop-color="#b8a4ff"/>
+      <stop offset="1" stop-color="#f3a8c8"/>
+    </linearGradient>
     <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-out" viewBox="0 0 20 20"><path d="M7 5h8v8M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v11M5 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
+
 
 <header class="top" id="top-bar">
   <div class="wrap">
@@ -384,7 +431,7 @@
     <div class="wrap">
       <div class="hero-copy">
         <h1 id="hero-title">Loyalty that brings your <em>clients back.</em></h1>
-        <p class="lede">Loyalty programs, client apps and websites, built for your business and run by the person who built them.</p>
+        <p class="lede">I spot the regulars who are quietly drifting away, and help you bring them back. Built around the software you already use, and run by the person who built it.</p>
         <div class="actions">
           <a class="act primary" href="https://crowdotwave.github.io/nith-valley-app/?demo=client" target="_blank" rel="noopener">Try the live demo <svg aria-hidden="true"><use href="#i-out"/></svg></a>
           <a class="act" href="#contact">Get in touch <svg aria-hidden="true"><use href="#i-down"/></svg></a>
@@ -408,32 +455,73 @@
     <div class="wrap">
       <div class="head">
         <h2 id="drift-title">Some clients quietly drift. See them while there is still time to bring them back.</h2>
-        <p>Points and rewards keep regulars coming. The part most programs skip is the report that shows who stopped, so one note can reach them before they are gone.</p>
+        <p>Every business has a rhythm: a class a week, a groom every six weeks, a cut every five. The part most programs skip is noticing who has fallen out of theirs, so one note can reach them before they are gone.</p>
+      </div>
+
+      <div class="kinds" role="group" aria-label="Show it for">
+        <span class="sample">Show it for</span>
+        <button type="button" class="kind" data-kind="vet" aria-pressed="true">Vet clinic</button>
+        <button type="button" class="kind" data-kind="gym" aria-pressed="false">Gym or studio</button>
+        <button type="button" class="kind" data-kind="groom" aria-pressed="false">Groomer</button>
+        <button type="button" class="kind" data-kind="salon" aria-pressed="false">Salon</button>
+        <button type="button" class="kind" data-kind="trainer" aria-pressed="false">Trainer</button>
       </div>
 
       <ul class="clients" id="clients">
         <li class="client" data-state="vivid">
           <div class="client-name"><b>Harper household</b><span>In last week · <span class="n-held">135 points</span></span></div>
-          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 24 C80 17 150 31 214 24 S340 24 396 24"/><path class="fringe" stroke="url(#spectrum)" d="M4 20 C80 13 150 27 214 20 S340 20 396 20"/></svg>
+          <div class="edge"><svg class="edge-line" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"></svg></div>
           <div class="client-state"><span class="word">Regular</span></div>
         </li>
         <li class="client" data-state="forming">
           <div class="client-name"><b>Okafor household</b><span>Joined this month · <span class="n-held">40 points</span></span></div>
-          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 24 C70 30 140 18 200 24 S330 24 396 24"/><path class="fringe" stroke="url(#spectrum)" d="M4 20 C70 26 140 14 200 20 S330 20 396 20"/></svg>
+          <div class="edge"><svg class="edge-line" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"></svg></div>
           <div class="client-state"><span class="word">New, still forming</span></div>
         </li>
         <li class="client" data-state="dispersing">
           <div class="client-name"><b>Lindqvist household</b><span>Last visit 11 weeks ago · <span class="n-wait">120 points waiting</span></span></div>
-          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 24 C90 19 160 29 228 24 S344 24 396 24"/><path class="fringe" stroke="url(#spectrum)" d="M4 20 C90 15 160 25 228 20 S344 20 396 20"/></svg>
+          <div class="edge"><svg class="edge-line" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"></svg></div>
           <div class="client-state"><span class="word">Drifting</span><button class="act small primary" type="button" data-bring-back>Send a note</button></div>
         </li>
         <li class="client" data-state="absent">
           <div class="client-name"><b>Marchetti household</b><span>Last visit 7 months ago · <span class="n-wait">85 points waiting</span></span></div>
-          <svg class="edge" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"><path class="body" d="M4 24 C75 29 135 20 190 24 S326 24 396 24"/><path class="fringe" stroke="url(#spectrum)" d="M4 20 C75 25 135 16 190 20 S326 20 396 20"/></svg>
+          <div class="edge"><svg class="edge-line" viewBox="0 0 400 44" preserveAspectRatio="none" aria-hidden="true"></svg></div>
           <div class="client-state"><span class="word">Gone quiet</span><button class="act small primary" type="button" data-bring-back>Send a note</button></div>
         </li>
+        <li class="client key" aria-hidden="true"><span></span><div class="axis"><span>6 months ago</span><span>Now</span></div><span></span></li>
       </ul>
-      <p class="drift-note"><span class="sample">Sample clients. Try sending a note.</span><output id="drift-status">Two clients have points waiting and have not been in.</output></p>
+      <p class="drift-note"><span class="sample">Sample clients. Each line is their last six months: high is keeping their usual rhythm, and it sinks and breaks up as they come less. Try sending a note.</span><output id="drift-status">Two clients have points waiting and have not been in.</output></p>
+
+      <div class="best" aria-labelledby="best-title">
+        <div class="best-head">
+          <div>
+            <h3 id="best-title">Your best clients</h3>
+            <p>The other end of the list: who to thank. This is the owner's view, and clients never see it.</p>
+          </div>
+          <div class="best-sorts" role="group" aria-label="Rank by">
+            <button type="button" class="kind best-sort" data-sort="loyal" aria-pressed="true">Most loyal</button>
+            <button type="button" class="kind best-sort" data-sort="spend" aria-pressed="false">Top spend</button>
+          </div>
+        </div>
+        <ol class="best-list" id="best-list"></ol>
+        <p class="sample">Sample figures.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="fits" aria-labelledby="fits-title">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="fits-title">For businesses where clients come back on a rhythm.</h2>
+        <p>If you can say how often a good client usually comes in, you can see when one stops. These are the businesses where that is easiest to see, and where one kept client pays for the work.</p>
+      </div>
+      <ul class="offers fits">
+        <li class="offer"><h3>Small gyms and studios<span>Weekly check-ins</span></h3><p>Your booking app already knows who stopped checking in, and nobody has time to look. I turn it into a weekly list, a note in your own voice, and a progress recap members actually read. Nothing new for them to install.</p></li>
+        <li class="offer"><h3>Personal trainers<span>Sessions every week</span></h3><p>Clients quit when they cannot see it working. I show them the evidence, and flag the ones whose sessions are thinning out before they cancel.</p></li>
+        <li class="offer"><h3>Pet groomers and daycares<span>Every four to eight weeks</span></h3><p>Reminders timed to each dog's own cycle, points at the counter, and a heads-up when a regular goes quiet.</p></li>
+        <li class="offer"><h3>Salons and barbershops<span>Every three to eight weeks</span></h3><p>Each client's own interval, a list of who is overdue, and a note from their stylist instead of one more automated text.</p></li>
+        <li class="offer"><h3>Vet clinics<span>Food and medication every month</span></h3><p>Refills ordered from the pet's file, points at the counter, and a reminder before the food runs out. Already built for one clinic, below.</p></li>
+      </ul>
     </div>
   </section>
 
@@ -447,12 +535,11 @@
         <div class="project-text">
           <span class="status"><svg viewBox="0 0 28 10" aria-hidden="true"><path d="M1 7c6-6 12 2 18-3s7 1 8 0" fill="none" stroke="#f3a8c8" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Built and working, not yet in use</span>
           <h3>Nith Valley Animal Hospital</h3>
-          <p>A client app and a front desk console for a veterinary clinic in New Hamburg, Ontario, built to sit alongside the clinic's existing practice software rather than replace it.</p>
+          <p>A client app and front desk console for a vet clinic in New Hamburg, Ontario, built alongside its existing practice software.</p>
           <ul class="facts">
-            <li>Clients request food and medication refills from the pet's file, and follow each request through to ready for pickup, without phoning.</li>
+            <li>Clients order food and medication refills from their pet's file, and see when it is ready, without phoning.</li>
             <li>The app tells clients before food or a prescription runs out.</li>
-            <li>Points are awarded at the counter with one tap, and every point a client holds can be explained.</li>
-            <li>It never calculates a vaccination due date. It only repeats what staff entered, so it cannot tell someone their dog is due when it is not.</li>
+            <li>Points are awarded at the counter with one tap.</li>
           </ul>
           <div class="try">
             <a class="act small primary" href="https://crowdotwave.github.io/nith-valley-app/?demo=client" target="_blank" rel="noopener">Try it as a pet owner <svg aria-hidden="true"><use href="#i-out"/></svg></a>
@@ -478,11 +565,10 @@
         <div class="project-text">
           <span class="status"><svg viewBox="0 0 28 10" aria-hidden="true"><path d="M1 7c6-6 12 2 18-3s7 1 8 0" fill="none" stroke="url(#spectrum)" stroke-width="1.8" stroke-linecap="round"/></svg>In use</span>
           <h3>A personal trainer</h3>
-          <p>The trainer builds programs and assigns them, clients log their sets on their phone, and both see progress over time.</p>
+          <p>Retention by evidence: clients log their sets on their phone and see their progress, because clients who can see it working keep coming.</p>
           <ul class="facts">
-            <li>Built on the idea that clients quit when they cannot see it working, so the product is the evidence of progress, not the logging.</li>
-            <li>Works with no signal, in a basement gym, and catches up later.</li>
-            <li>Each client sees only their own data. That rule is enforced by the database, not just hidden on the screen.</li>
+            <li>Works with no signal, and catches up later.</li>
+            <li>Each client sees only their own data.</li>
           </ul>
         </div>
         <div class="project-media">
@@ -499,21 +585,14 @@
         </div>
       </article>
 
-      <article class="project">
+      <article class="project solo">
         <div class="project-text">
           <span class="status">Website</span>
           <h3>A memorial resin artist</h3>
-          <p>A website for a small studio making memorial pieces from resin: a gallery, a memorial wall where people add the animals they have lost, and a page of grief support resources.</p>
+          <p>A website for a memorial resin studio: a gallery, a memorial wall, and grief support resources.</p>
           <ul class="facts">
             <li>Written so the owner can add photos and memorials without a developer.</li>
-            <li>A tender subject, handled plainly: no forms that silently throw away what someone wrote.</li>
           </ul>
-        </div>
-        <div class="project-media">
-          <div class="memorial-media">
-            <blockquote>Nothing appears on the wall until the owner has seen it.</blockquote>
-            <p>A visitor writes about their animal, it reaches the owner's inbox first, and the owner adds it to the wall.</p>
-          </div>
         </div>
       </article>
     </div>
@@ -525,10 +604,10 @@
         <h2 id="build-title">Made for your business, not rented from a vendor with five thousand customers.</h2>
       </div>
       <ul class="offers">
-        <li class="offer lead"><h3>Loyalty and retention programs</h3><p>Points, rewards, and the reports that show who has quietly stopped coming back. Every point on the record can be explained, and a correction is a new line, never an edit.</p></li>
-        <li class="offer"><h3>Client apps and staff tools</h3><p>An app for your clients and the matching screen for your front desk, working alongside the systems you already use.</p></li>
-        <li class="offer"><h3>Websites, fixed or rebuilt, then kept running</h3><p>Including the unglamorous part: the right address, phone numbers you can tap, and pages that do not break.</p></li>
-        <li class="offer"><h3>Automating the repetitive work</h3><p>The task somebody does by hand every week that a small tool could do instead.</p></li>
+        <li class="offer lead"><h3>Loyalty and retention programs</h3><p>Points, rewards, and a report of who has quietly stopped coming back.</p></li>
+        <li class="offer"><h3>Client apps and staff tools</h3><p>An app for your clients and a matching screen for your front desk.</p></li>
+        <li class="offer"><h3>Websites, fixed or rebuilt, then kept running</h3><p>The right address, phone numbers you can tap, and pages that do not break.</p></li>
+        <li class="offer"><h3>Automating the repetitive work</h3><p>The weekly chore a small tool could do instead.</p></li>
       </ul>
     </div>
   </section>
@@ -541,17 +620,17 @@
       </div>
       <div class="versus" role="table" aria-label="A rented platform compared with working with me">
         <div class="versus-row labels" role="row"><span role="columnheader"></span><span role="columnheader">A platform with thousands of customers</span><span role="columnheader" class="me">With me</span></div>
-        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">Who you deal with</span><span class="versus-them" role="cell">A support queue, and someone new each time</span><span class="versus-me" role="cell"><b>One person.</b> No queue, no ticket, no explaining your business again.</span></div>
-        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When you need a change</span><span class="versus-them" role="cell">It goes on their roadmap, if it suits everyone else</span><span class="versus-me" role="cell"><b>Changes in days, not quarters.</b> A request on Tuesday can be working by Friday.</span></div>
-        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">Your existing systems</span><span class="versus-them" role="cell">Replaced, or worked around</span><span class="versus-me" role="cell"><b>They stay where they are.</b> Your booking system, practice software and payment terminal keep working.</span></div>
-        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When something cannot be done</span><span class="versus-them" role="cell">An upgrade tier, or silence</span><span class="versus-me" role="cell"><b>A straight answer, and why.</b> That is worth more than a feature that half works.</span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">Who you deal with</span><span class="versus-them" role="cell">A support queue, and someone new each time</span><span class="versus-me" role="cell"><b>One person.</b> No queue, no ticket.</span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When you need a change</span><span class="versus-them" role="cell">It goes on their roadmap, if it suits everyone else</span><span class="versus-me" role="cell"><b>Changes in days, not quarters.</b></span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">Your existing systems</span><span class="versus-them" role="cell">Replaced, or worked around</span><span class="versus-me" role="cell"><b>They stay where they are.</b></span></div>
+        <div class="versus-row" role="row"><span class="versus-q" role="rowheader">When something cannot be done</span><span class="versus-them" role="cell">An upgrade tier, or silence</span><span class="versus-me" role="cell"><b>A straight answer, and why.</b></span></div>
       </div>
 
       <!-- [DECIDE] New copy, not in the brief: confirm these three steps match how Chris wants to start. -->
       <div class="start">
-        <div><h3>Tell me the repetitive thing</h3><p>The phone calls, the spreadsheet, the task that eats an afternoon every week. In writing, whenever suits you.</p></div>
-        <div><h3>I work out how it fits</h3><p>What you already use stays. The new piece is built around it, not the other way round.</p></div>
-        <div><h3>You try a working version</h3><p>Something real in your hands, changed as you use it, and kept running after.</p></div>
+        <div><h3>Tell me the repetitive thing</h3><p>The calls, the spreadsheet, the chore that eats an afternoon.</p></div>
+        <div><h3>I work out how it fits</h3><p>What you already use stays.</p></div>
+        <div><h3>You try a working version</h3><p>Something real, changed as you use it, and kept running.</p></div>
       </div>
     </div>
   </section>
@@ -560,8 +639,6 @@
     <div class="wrap">
       <div class="about">
         <h2>I'm Chris. <span>I work with small businesses across Canada, and locally in Edmonton and St. Albert.</span></h2>
-        <!-- [DECIDE] About: two or three sentences in Chris's own words. Delete this block when written. -->
-        <p class="todo">[DECIDE] Two or three sentences from Chris: why this work, and what came before.</p>
         <p class="price">Every project is quoted for the business.</p>
       </div>
 
@@ -570,7 +647,6 @@
         <p>Write whenever suits you. I reply in writing, usually within a day.</p>
         <!-- [DECIDE] Replace YOUR_FORM_ID with the real Formspree form ID. The form switches on by itself once it is replaced. -->
         <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-          <p class="todo" id="form-off" hidden>[DECIDE] This form is not connected yet, so nothing typed here would be sent. It switches on once the form service is set up.</p>
           <div class="row">
             <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
             <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
@@ -792,21 +868,199 @@
     if (!still) setInterval(() => { if (!document.hidden) add(); }, 4200);
   })();
 
-  /* Drifting clients: sending a note re-forms the band. */
+  /* Drifting clients, told in five businesses, and every line is a real reading of the sample.
+     Big moments sit on the line as marks, and the best clients are ranked underneath.
+     Left to right is the last six months, with now at the right hand end. Height is how closely
+     the client is keeping to THEIR OWN usual rhythm, so a monthly food pickup, a weekly class and a
+     six week groom all sit at the same height when kept. It sinks the longer somebody is overdue,
+     each bump is a visit, and the fringe stays whole while they are on rhythm, thins as they slip
+     and fades once they have stopped. The words beside each line say the same thing the line
+     draws. All of it is sample data. */
   (function () {
-    const status = document.getElementById("drift-status");
-    const count = () => document.querySelectorAll('.client[data-state="dispersing"], .client[data-state="absent"]').length;
-    document.querySelectorAll("[data-bring-back]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const row = btn.closest(".client");
-        const name = row.querySelector("b").textContent;
-        row.dataset.state = "forming";
-        row.querySelector(".word").textContent = "Note sent, forming again";
-        btn.remove();
-        const left = count();
-        status.textContent = `Note sent to the ${name}. ` + (left ? `${left} still drifting.` : "Nobody is drifting.");
+    const WEEKS = 26;
+    // Interval businesses: the weeks a client came in (negative is before the window) and how
+    // many weeks apart their visits usually are.
+    const every = (n, visits) => ({ every: n, visits });
+    // Frequency businesses: visits per week, and what is usual for this client. null is before
+    // they joined.
+    const weekly = (usual, runs) => {
+      const counts = Array(WEEKS + 1).fill(null);
+      runs.forEach(([from, to, v]) => { for (let w = from; w <= to; w++) counts[w] = Array.isArray(v) ? v[(w - from) % v.length] : v; });
+      return { usual, counts };
+    };
+
+    const KINDS = {
+      vet: { status: "Two clients have points waiting and have not been in.", rows: [
+        ["Harper household", "In last week", "135 points", "held", "Regular", null, every(4, [-3, 1, 5, 9, 13, 17, 21, 25]), [[13, "$240 dental"], [21, "Referred a friend"]]],
+        ["Okafor household", "Joined this month", "40 points", "held", "New, still forming", null, every(4, [23])],
+        ["Lindqvist household", "Last visit 11 weeks ago", "120 points waiting", "wait", "Drifting", "the Lindqvist household", every(4, [-3, 1, 5, 9, 15]), [[5, "$380 surgery"]]],
+        ["Marchetti household", "Last visit 5 months ago", "85 points waiting", "wait", "Gone quiet", "the Marchetti household", every(4, [-8, -4, 0, 4])]] },
+      gym: { status: "Two members are still paying and have stopped coming.", rows: [
+        ["Priya S.", "4 check-ins this week", "Unlimited", "held", "Regular", null, weekly(3, [[0, 26, [3, 4, 3, 3, 4, 2, 3, 4, 3]]]), [[9, "1 year a member"], [18, "Brought a friend"]]],
+        ["Dan M.", "Joined 3 weeks ago", "2 classes a week", "held", "New, still forming", null, weekly(2, [[23, 26, 2]])],
+        ["Alex R.", "Was 3 a week, 1 in the last fortnight", "Still billed", "wait", "Drifting", "Alex", weekly(3, [[0, 20, [3, 3, 4, 3]], [21, 22, 2], [23, 24, 1], [25, 25, 0], [26, 26, 1]]), [[6, "$400 PT package"]]],
+        ["Jordan T.", "No check-in for 5 weeks", "Still billed", "wait", "Gone quiet", "Jordan", weekly(2, [[0, 21, [2, 3, 2, 2]], [22, 26, 0]])]] },
+      groom: { status: "Two dogs are past their usual groom.", rows: [
+        ["Biscuit", "Every 6 weeks", "Due in 2 weeks", "held", "Regular", null, every(6, [-2, 4, 10, 16, 22]), [[10, "4 years with you"], [22, "Referred 2 friends"]]],
+        ["Maple", "First groom last month", "Rebooked", "held", "New, still forming", null, every(6, [22])],
+        ["Juniper", "Usually every 5 weeks", "Now at 9", "wait", "Drifting", "Juniper's owner", every(5, [-3, 2, 7, 12, 17]), [[7, "$140 spa groom"]]],
+        ["Pepper", "Last groom 5 months ago", "60 points waiting", "wait", "Gone quiet", "Pepper's owner", every(6, [-8, -2, 4])]] },
+      salon: { status: "Two clients are past their usual cut.", rows: [
+        ["Mei L.", "Every 5 weeks", "Booked for Friday", "held", "Regular", null, every(5, [-4, 1, 6, 11, 16, 21]), [[11, "$280 colour"], [21, "6 years with you"]]],
+        ["Sam K.", "Second visit last week", "Rebooked", "held", "New, still forming", null, every(4, [21, 25])],
+        ["Rachel B.", "Usually every 6 weeks", "Now at 10", "wait", "Drifting", "Rachel", every(6, [-2, 4, 10, 16]), [[4, "$320 colour"]]],
+        ["Tom H.", "Last cut 5 months ago", "Not rebooked", "wait", "Gone quiet", "Tom", every(5, [-6, -1, 4])]] },
+      trainer: { status: "Two clients stopped before they saw their progress.", rows: [
+        ["Leah B.", "3 sessions a week", "Squat up 20 lb", "held", "Regular", null, weekly(3, [[0, 26, [3, 3, 4, 3, 2, 3]]]), [[12, "Squat record"], [20, "Renewed 3 months"]]],
+        ["Noah P.", "Started this month", "First program", "held", "New, still forming", null, weekly(2, [[23, 26, 2]])],
+        ["Chloe W.", "Was twice a week, 1 in the last 3 weeks", "Progress unseen", "wait", "Drifting", "Chloe", weekly(2, [[0, 22, [2, 2, 3, 2]], [23, 23, 0], [24, 24, 1], [25, 26, 0]]), [[10, "$600 package"]]],
+        ["Marcus J.", "No session since spring", "Progress unseen", "wait", "Gone quiet", "Marcus", weekly(2, [[0, 8, [2, 3, 2]], [9, 26, 0]])]] },
+    };
+    // The other end of the list: who to thank. The owner's eyes only, sample figures.
+    const BEST = {
+      vet: [["Harper household", 4, 97, 1480], ["Nguyen household", 7, 93, 2150], ["Lindqvist household", 5, 71, 1960, true], ["Park household", 3, 95, 890], ["Osei household", 2, 99, 760]],
+      gym: [["Priya S.", 3, 98, 2160], ["Marco D.", 5, 91, 1890], ["Alex R.", 2, 74, 2640, true], ["Hana K.", 1, 97, 1320], ["Ben O.", 4, 88, 1560]],
+      groom: [["Biscuit", 4, 100, 760], ["Otis", 6, 94, 980], ["Juniper", 3, 68, 690, true], ["Luna", 2, 96, 540], ["Rufus", 5, 90, 820]],
+      salon: [["Mei L.", 6, 98, 1340], ["Rachel B.", 4, 72, 1720, true], ["Aisha M.", 3, 95, 980], ["Grace T.", 8, 92, 1110], ["Nico P.", 2, 97, 620]],
+      trainer: [["Leah B.", 2, 97, 4800], ["Omar F.", 3, 90, 5200], ["Chloe W.", 1, 70, 2400, true], ["Sophie D.", 1, 94, 3600], ["Ravi K.", 4, 86, 4100]],
+    };
+    const STATES = ["vivid", "forming", "dispersing", "absent"];
+
+    // How closely the client kept their rhythm, week by week. 1 is exactly on it.
+    function rhythm(series) {
+      const out = [];
+      for (let w = 0; w <= WEEKS; w++) {
+        if (series.every) {
+          const past = series.visits.filter((v) => v <= w);
+          if (!past.length) { out.push(null); continue; }
+          const since = w - Math.max(...past);
+          const onTime = since <= series.every ? 1 : series.every / since;
+          out.push(onTime + (since === 0 ? 0.1 : 0));
+        } else {
+          const now = series.counts[w], before = series.counts[w - 1];
+          if (now === null) { out.push(null); continue; }
+          const avg = before === null || before === undefined ? now : (now + before) / 2;
+          out.push(avg / series.usual);
+        }
+      }
+      return out;
+    }
+
+    // One smooth line through the weeks, cut into stretches by how well each was kept, so the
+    // fringe can be whole, thin or faint along its length.
+    function draw(edge, series, moments) {
+      const svg = edge.querySelector(".edge-line");
+      const r = rhythm(series);
+      const X = (w) => 4 + (w / WEEKS) * 392;
+      const Y = (v) => 34 - Math.max(0, Math.min(1.25, v)) * 18;
+      const pts = r.map((v, w) => (v === null ? null : [X(w), Y(v), v]));
+      const first = pts.findIndex((p) => p);
+      const seg = { on: "", thin: "", faint: "", body: "" };
+      const clampY = (y) => Math.max(8, Math.min(36, y));
+      for (let i = first; i < WEEKS; i++) {
+        const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+        const c1 = [p1[0] + (p2[0] - p0[0]) / 6, clampY(p1[1] + (p2[1] - p0[1]) / 6)];
+        const c2 = [p2[0] - (p3[0] - p1[0]) / 6, clampY(p2[1] - (p3[1] - p1[1]) / 6)];
+        const piece = `M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+        const kept = (p1[2] + p2[2]) / 2;
+        seg[kept >= 0.75 ? "on" : kept >= 0.4 ? "thin" : "faint"] += piece;
+        seg.body += piece;
+      }
+      svg.innerHTML =
+        `<path class="t-body" d="${seg.body}"/>` +
+        `<g transform="translate(0 -3)"><path class="t-on" stroke="url(#spectrum-line)" d="${seg.on}"/>` +
+        `<path class="t-thin" stroke="url(#spectrum-line)" d="${seg.thin}"/>` +
+        `<path class="t-faint" stroke="url(#spectrum-line)" d="${seg.faint}"/></g>`;
+      // Big moments: a spend, a milestone, a referral. Height still means rhythm; these are marks
+      // ON the line, so the two never compete for one channel.
+      edge.querySelectorAll(".mark").forEach((m) => m.remove());
+      (moments || []).forEach(([w, label]) => {
+        const v = r[w];
+        if (v === null) return;
+        const m = document.createElement("span");
+        m.className = "mark";
+        m.style.left = `${(X(w) / 400) * 100}%`;
+        m.style.top = `${Y(v) - 3}px`;
+        m.innerHTML = '<i></i><span class="mark-label"></span>';
+        m.querySelector(".mark-label").textContent = label;
+        edge.append(m);
       });
-    });
+    }
+
+    const list = document.getElementById("clients");
+    const rows = [...list.querySelectorAll(".client:not(.key)")];
+    const status = document.getElementById("drift-status");
+    const kinds = [...document.querySelectorAll(".kind[data-kind]")];
+    const count = () => list.querySelectorAll('.client[data-state="dispersing"], .client[data-state="absent"]').length;
+
+    function show(k) {
+      kinds.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.kind === k)));
+      KINDS[k].rows.forEach(([name, when, fact, tone, word, to, series, moments], i) => {
+        const row = rows[i];
+        row.dataset.state = STATES[i];
+        draw(row.querySelector(".edge"), series, moments);
+        const who = row.querySelector(".client-name");
+        who.textContent = "";
+        const b = document.createElement("b");
+        b.textContent = name;
+        const line = document.createElement("span");
+        line.textContent = when + " · ";
+        const tag = document.createElement("span");
+        tag.className = tone === "wait" ? "n-wait" : "n-held";
+        tag.textContent = fact;
+        line.append(tag);
+        who.append(b, line);
+        const state = row.querySelector(".client-state");
+        state.textContent = "";
+        const w = document.createElement("span");
+        w.className = "word";
+        w.textContent = word;
+        state.append(w);
+        if (to) {
+          const btn = document.createElement("button");
+          btn.className = "act small primary";
+          btn.type = "button";
+          btn.textContent = "Send a note";
+          btn.addEventListener("click", () => {
+            row.dataset.state = "forming";
+            w.textContent = "Note sent, forming again";
+            btn.remove();
+            const left = count();
+            status.textContent = `Note sent to ${to}. ` + (left ? `${left} still drifting.` : "Nobody is drifting.");
+          });
+          state.append(btn);
+        }
+      });
+      status.textContent = KINDS[k].status;
+      current = k;
+      rank();
+    }
+
+    const board = document.getElementById("best-list");
+    const sorts = [...document.querySelectorAll(".best-sort")];
+    let current = "vet", by = "loyal";
+    const money = (n) => "$" + n.toLocaleString("en-CA");
+    function rank() {
+      sorts.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sort === by)));
+      const list = [...BEST[current]].sort((a, b) => (by === "spend" ? b[3] - a[3] : b[2] - a[2] || b[1] - a[1]));
+      board.textContent = "";
+      list.forEach(([name, years, kept, spend, drifting], i) => {
+        const li = document.createElement("li");
+        if (drifting) li.className = "is-drifting";
+        li.innerHTML = '<span class="best-rank"></span><span class="best-who"><b></b><span></span></span><span class="best-figure"><b></b><span></span></span>';
+        li.querySelector(".best-rank").textContent = i + 1;
+        const who = li.querySelector(".best-who b");
+        who.textContent = name;
+        if (drifting) { const pill = document.createElement("em"); pill.textContent = "Drifting"; who.after(pill); }
+        li.querySelector(".best-who > span").textContent = `With you ${years} year${years === 1 ? "" : "s"} · kept their rhythm ${kept}% of the time`;
+        li.querySelector(".best-figure b").textContent = by === "spend" ? money(spend) : kept + "%";
+        li.querySelector(".best-figure span").textContent = by === "spend" ? "this year" : "on rhythm";
+        board.append(li);
+      });
+    }
+    sorts.forEach((b) => b.addEventListener("click", () => { by = b.dataset.sort; rank(); }));
+    kinds.forEach((b) => b.addEventListener("click", () => show(b.dataset.kind)));
+    show("vet");
   })();
 
   /* Recordings play only on screen; reduced motion keeps the still frame. */
@@ -828,7 +1082,7 @@
     const send = document.getElementById("f-send");
     const status = document.getElementById("form-status");
     const connected = !form.action.includes("YOUR_FORM_ID");
-    if (!connected) { document.getElementById("form-off").hidden = false; send.disabled = true; }
+    if (!connected) { send.disabled = true; }
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!connected) return;
@@ -846,7 +1100,6 @@
       }
     });
   })();
-
   /* The thread. Built from the page's own layout, so it follows the sections wherever they fall:
      down the gutter beside each one, and out across the gap in a wide curve that lands just
      before the next heading. Scrolling draws it, with its head kept two thirds of the way down
